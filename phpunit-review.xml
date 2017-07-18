@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">app/</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="env" value="review"/>
+        <env name="base_url" value="http://api.app"/>
+        <env name="login" value="sdk-website"/>
+        <env name="key" value="57ff5cde6d8c68245e994d5cb3cf9bff74c80a192e5088c98aadb"/>
+        <env name="second_login" value="my-website"/>
+        <env name="second_key" value="0c53af8eddbfe3c2c07cb4ed779faee163f84c18d79fa51a335b46d0e8859442"/>
+    </php>
+</phpunit>
