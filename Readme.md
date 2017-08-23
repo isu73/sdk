@@ -500,6 +500,27 @@ Exception 'TwoFAS\Api\Exception\ValidationException'
 with message 'Validation exception'
 ```
 
+## getIntegrationUsers
+
+Used for getting paginated list of integration users from 2fas.
+
+#### Parameters
+Name | Type | Description
+--- | --- | ---
+$page | `int` or `null` | The page number from which you want to display the results
+
+#### Example
+
+```php
+$usersData = $twoFAS->getIntegrationUsers();
+```
+
+#### Response
+
+###### Successful
+
+##### Returns collection of IntegrationUsers
+
 ## getIntegrationUser
 
 Used for get integration user from 2fas.

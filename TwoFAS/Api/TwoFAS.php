@@ -35,7 +35,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '3.0.7';
+    const VERSION = '3.0.8';
 
     /**
      * @var string
@@ -510,6 +510,38 @@ class TwoFAS
             array(
                 'status' => (string) $status
             )
+        );
+
+        if ($response->matchesHttpCode(HttpCodes::OK)) {
+            return $response->getData();
+        }
+
+        throw $response->getError();
+    }
+
+    /**
+     * @param int|null $page
+     *
+     * @return array
+     *
+     * @throws AuthorizationException
+     * @throws Exception
+     */
+    public function getIntegrationUsers($page = null)
+    {
+        $url = '/users';
+
+        if (!is_null($page) && !is_int($page)) {
+            throw new InvalidArgumentException('Page number is not valid.');
+        }
+
+        if (!is_null($page)) {
+            $url .= '?page=' . $page;
+        }
+
+        $response = $this->call(
+            'GET',
+            $this->createEndpoint($url)
         );
 
         if ($response->matchesHttpCode(HttpCodes::OK)) {

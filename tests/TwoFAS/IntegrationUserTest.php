@@ -333,6 +333,42 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->twoFAS->updateIntegrationUser($this->keyStorage, $user);
     }
 
+    public function testGetIntegrationUsers()
+    {
+        $expectedStructure = array(
+            'total'         => 1,
+            'per_page'      => 50,
+            'current_page'  => 1,
+            'last_page'     => 1,
+            'next_page_url' => null,
+            'prev_page_url' => null,
+            'from'          => 1,
+            'to'            => 1,
+            'data'          => array(
+                array(),
+                array(),
+                array()
+            )
+        );
+
+        if ($this->isDevelopmentEnvironment()) {
+            $this->httpClient->method('request')->willReturn(ResponseGenerator::createFrom(json_encode($expectedStructure), HttpCodes::OK));
+            $this->twoFAS->setHttpClient($this->httpClient);
+        }
+
+        $response = $this->twoFAS->getIntegrationUsers();
+
+        $this->assertEquals(array_keys($response), array_keys($expectedStructure));
+        $this->assertCount(3, $response['data']);
+    }
+
+    public function testCannotGetIntegrationUsersWhenUseInvalidPage()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Page number is not valid.');
+
+        $this->twoFAS->getIntegrationUsers('foobar');
+    }
+
     /**
      * @param IntegrationUser $user
      *
