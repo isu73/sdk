@@ -35,7 +35,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '3.0.12';
+    const VERSION = '3.0.13';
 
     /**
      * @var string
@@ -50,7 +50,7 @@ class TwoFAS
     /**
      * @var string
      */
-    private $baseUrl = 'https://twofas-api.herokuapp.com';
+    private $baseUrl = 'https://api.2fas.com';
 
     /**
      * @var string
