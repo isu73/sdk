@@ -32,7 +32,7 @@ class EndroidQrClient implements QrClientInterface
         $this->client
             ->setText($text)
             ->setSize(QrClientInterface::SIZE)
-            ->setErrorCorrection('high');
+            ->setErrorCorrection('medium');
 
         return $this->client->getDataUri();
     }
