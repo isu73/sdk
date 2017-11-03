@@ -3,13 +3,14 @@
 namespace TwoFAS\Api\Exception;
 
 use TwoFAS\Api\ValidationRules;
+use TwoFAS\ValidationRules\ValidationExceptionInterface;
 
 /**
  * Class ValidationException
  *
  * @package TwoFAS\Api\Exception
  */
-class ValidationException extends Exception
+class ValidationException extends Exception implements ValidationExceptionInterface
 {
     /**
      * @var array
