@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9cd0548d619e08c85ca91c5348bf26f3",
-    "content-hash": "de1cfcd5663c0f1f1730ad8c14c01dbc",
+    "hash": "7e0615a4175a68e33ff69550effe410e",
+    "content-hash": "47d2fd066b7495a46a4997ed3891045d",
     "packages": [
         {
-            "name": "endroid/qrcode",
+            "name": "endroid/qr-code",
             "version": "1.6.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/endroid/QrCode.git",
+                "url": "https://github.com/endroid/qr-code.git",
                 "reference": "cef5d5b7b904d7bb0708eb744c35316364b65fa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/QrCode/zipball/cef5d5b7b904d7bb0708eb744c35316364b65fa0",
+                "url": "https://api.github.com/repos/endroid/qr-code/zipball/cef5d5b7b904d7bb0708eb744c35316364b65fa0",
                 "reference": "cef5d5b7b904d7bb0708eb744c35316364b65fa0",
                 "shasum": ""
             },
@@ -59,16 +59,16 @@
         },
         {
             "name": "twofas/encryption",
-            "version": "v1.2",
+            "version": "v2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twofas/encryption.git",
-                "reference": "0574c2843d4d3fb61a8e94ff78e710d7aa66a2cd"
+                "reference": "b393d153fd6d9445116d091293bb90113f433570"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twofas/encryption/zipball/0574c2843d4d3fb61a8e94ff78e710d7aa66a2cd",
-                "reference": "0574c2843d4d3fb61a8e94ff78e710d7aa66a2cd",
+                "url": "https://api.github.com/repos/twofas/encryption/zipball/b393d153fd6d9445116d091293bb90113f433570",
+                "reference": "b393d153fd6d9445116d091293bb90113f433570",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                 }
             ],
             "description": "Encryption for TwoFAS data.",
-            "time": "2017-05-15 12:54:35"
+            "time": "2018-01-04 09:13:11"
         },
         {
             "name": "twofas/validation-rules",
@@ -505,16 +505,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.4.11",
+            "version": "1.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "e03f8f67534427a787e21a385a67ec3ca6978ea7"
+                "reference": "1ce90ba27c42e4e44e6d8458241466380b51fa16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/e03f8f67534427a787e21a385a67ec3ca6978ea7",
-                "reference": "e03f8f67534427a787e21a385a67ec3ca6978ea7",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/1ce90ba27c42e4e44e6d8458241466380b51fa16",
+                "reference": "1ce90ba27c42e4e44e6d8458241466380b51fa16",
                 "shasum": ""
             },
             "require": {
@@ -550,7 +550,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2017-02-27 10:12:30"
+            "time": "2017-12-04 08:55:13"
         },
         {
             "name": "phpunit/phpunit",
