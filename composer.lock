@@ -59,16 +59,16 @@
         },
         {
             "name": "twofas/encryption",
-            "version": "v2.0",
+            "version": "v2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twofas/encryption.git",
-                "reference": "b393d153fd6d9445116d091293bb90113f433570"
+                "reference": "9bcc644ce7b575a2593c960391b623fcbd5ef470"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twofas/encryption/zipball/b393d153fd6d9445116d091293bb90113f433570",
-                "reference": "b393d153fd6d9445116d091293bb90113f433570",
+                "url": "https://api.github.com/repos/twofas/encryption/zipball/9bcc644ce7b575a2593c960391b623fcbd5ef470",
+                "reference": "9bcc644ce7b575a2593c960391b623fcbd5ef470",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                 }
             ],
             "description": "Encryption for TwoFAS data.",
-            "time": "2018-01-04 09:13:11"
+            "time": "2018-01-09 08:33:25"
         },
         {
             "name": "twofas/validation-rules",

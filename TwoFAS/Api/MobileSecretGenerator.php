@@ -2,6 +2,8 @@
 
 namespace TwoFAS\Api;
 
+use TwoFAS\Encryption\Random\RandomGenerator;
+
 /**
  * Class MobileSecretGenerator
  *
@@ -14,6 +16,8 @@ class MobileSecretGenerator
      */
     public static function generate()
     {
-        return substr(sha1(uniqid('', true)), 0, 32);
+        $generator = new RandomGenerator();
+
+        return $generator->alphaNum(32)->toLower()->__toString();
     }
 }

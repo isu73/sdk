@@ -13,7 +13,7 @@ class MobileSecretGeneratorTest extends PHPUnit_Framework_TestCase
 
             $secret = MobileSecretGenerator::generate();
 
-            $this->assertRegExp('/^[A-Za-z0-9]{32}$/', $secret);
+            $this->assertRegExp('/^[a-z0-9]{32}$/', $secret);
         }
     }
 }
