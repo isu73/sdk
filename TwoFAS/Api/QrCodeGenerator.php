@@ -5,7 +5,8 @@ namespace TwoFAS\Api;
 use TwoFAS\Api\QrCode\QrClientInterface;
 
 /**
- * Class QrCodeGenerator
+ * QrCodeGenerator object generates base64 encoded image of QR code,
+ * that can be easily displayed for user to scan it with smartphone.
  *
  * @package TwoFAS\Api
  */

@@ -6,7 +6,8 @@ use TwoFAS\Api\ValidationRules;
 use TwoFAS\ValidationRules\ValidationExceptionInterface;
 
 /**
- * Class ValidationException
+ * Validation Exceptions may contain multiple keys and rules.
+ * This exception will be thrown if data sent do API doesn't match the scheme.
  *
  * @package TwoFAS\Api\Exception
  */
@@ -30,6 +31,8 @@ class ValidationException extends Exception implements ValidationExceptionInterf
     }
 
     /**
+     * Returns all errors as constants.
+     *
      * @return array
      */
     public function getErrors()
@@ -38,6 +41,8 @@ class ValidationException extends Exception implements ValidationExceptionInterf
     }
 
     /**
+     * Returns all failing rules for key (as constants), or null if key passes validation.
+     *
      * @param string $key
      *
      * @return array|null
@@ -52,6 +57,8 @@ class ValidationException extends Exception implements ValidationExceptionInterf
     }
 
     /**
+     * Returns all failing rules for key (as bare strings), or null if key passes validation.
+     *
      * @param string $key
      *
      * @return array|null
@@ -66,6 +73,8 @@ class ValidationException extends Exception implements ValidationExceptionInterf
     }
 
     /**
+     * Check if certain field failed validation.
+     *
      * @param string $key
      *
      * @return bool
@@ -76,6 +85,8 @@ class ValidationException extends Exception implements ValidationExceptionInterf
     }
 
     /**
+     * Check if certain key failed specified rule.
+     *
      * @param string $key
      * @param string $rule
      *

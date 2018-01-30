@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Exception;
 
 /**
- * Class SmsToLandlineException
+ * This exception will be thrown if you're trying to send sms to landline which doesn't support it.
  *
  * @package TwoFAS\Api\Exception
  */

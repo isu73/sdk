@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use TwoFAS\Encryption\Cryptographer;
 
 /**
- * Class IntegrationUser
+ * This is an Entity that maps your local user to 2FAS user, and stores settings.
  *
  * @package TwoFAS\Api
  */

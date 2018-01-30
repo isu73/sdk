@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Exception;
 
 /**
- * Class InvalidNumberException
+ * This exception will be thrown if you passed phone number that cannot be parsed.
  *
  * @package TwoFAS\Api\Exception
  */

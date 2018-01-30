@@ -3,7 +3,8 @@
 namespace TwoFAS\Api\Code;
 
 /**
- * Class RejectedCodeCannotRetry
+ * This class is returned if code that you're checking is incorrect, and you cannot send the same id's with other code.
+ * You have to open a new authentication.
  *
  * @package TwoFAS\Api\Code
  */

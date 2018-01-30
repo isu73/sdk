@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Code;
 
 /**
- * Class RejectedCodeCanRetry
+ * This class is returned if code that you're checking is incorrect, but you can try send request again with different code.
  *
  * @package TwoFAS\Api\Code
  */

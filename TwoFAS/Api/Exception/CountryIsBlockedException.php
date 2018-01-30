@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Exception;
 
 /**
- * Class CountryIsBlockedException
+ * This exception will be thrown if number provided during phone-based authentication belongs to country blocked in settings.
  *
  * @package TwoFAS\Api\Exception
  */

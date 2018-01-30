@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class FormattedNumber
+ * It's a simply Value Object that stores phone number.
  *
  * @package TwoFAS\Api
  */

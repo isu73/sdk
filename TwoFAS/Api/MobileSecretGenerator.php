@@ -5,7 +5,7 @@ namespace TwoFAS\Api;
 use TwoFAS\Encryption\Random\RandomGenerator;
 
 /**
- * Class MobileSecretGenerator
+ * This class helps you generate mobile secret.
  *
  * @package TwoFAS\Api
  */

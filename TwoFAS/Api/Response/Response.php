@@ -17,7 +17,7 @@ use TwoFAS\Api\Exception\ValidationException;
 use TwoFAS\Api\HttpCodes;
 
 /**
- * Class Response
+ * This class stores data returned by the API
  *
  * @package TwoFAS\Api\Response
  */

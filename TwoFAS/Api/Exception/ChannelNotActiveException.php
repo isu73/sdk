@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Exception;
 
 /**
- * Class ChannelNotActiveException
+ * This exception will be thrown if channel which is used to make authentication is not active.
  *
  * @package TwoFAS\Api\Exception
  */

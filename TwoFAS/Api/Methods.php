@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class Methods
+ * This class contains a list of methods used as second factor in authentication.
  *
  * @package TwoFAS\Api
  */

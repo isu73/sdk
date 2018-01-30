@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Code;
 
 /**
- * Class AcceptedCode
+ * This class is returned if code that you're checking is correct.
  *
  * @package TwoFAS\Api\Code
  */

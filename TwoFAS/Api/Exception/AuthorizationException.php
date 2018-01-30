@@ -3,7 +3,7 @@
 namespace TwoFAS\Api\Exception;
 
 /**
- * Class AuthorizationException
+ * This exception will be thrown in case of invalid credentials.
  *
  * @package TwoFAS\Api\Exception
  */

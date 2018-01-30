@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class HttpCodes
+ * List of http status codes.
  *
  * @package TwoFAS\Api
  */

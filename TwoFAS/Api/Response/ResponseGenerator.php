@@ -5,7 +5,7 @@ namespace TwoFAS\Api\Response;
 use TwoFAS\Api\Exception\Exception;
 
 /**
- * Class ResponseGenerator
+ * This class converts plain data to Response object.
  *
  * @package TwoFAS\Api\Response
  */

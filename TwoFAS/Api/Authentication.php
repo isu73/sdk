@@ -5,7 +5,7 @@ namespace TwoFAS\Api;
 use DateTime;
 
 /**
- * Class Authentication
+ * This is an Entity that stores information about authentication.
  *
  * @package TwoFAS\Api
  */

@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class BackupCode
+ * It simply Value Object that store backup code.
  *
  * @package TwoFAS\Api
  */

@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class Errors
+ * List of error codes returned by API.
  *
  * @package TwoFAS\Api
  */

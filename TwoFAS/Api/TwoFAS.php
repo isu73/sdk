@@ -4,6 +4,7 @@ namespace TwoFAS\Api;
 
 use InvalidArgumentException;
 use TwoFAS\Api\Code\AcceptedCode;
+use TwoFAS\Api\Code\Code;
 use TwoFAS\Api\Code\RejectedCodeCannotRetry;
 use TwoFAS\Api\Code\RejectedCodeCanRetry;
 use TwoFAS\Api\Exception\AuthenticationLimitationException;
@@ -26,7 +27,7 @@ use TwoFAS\Encryption\Cryptographer;
 use TwoFAS\Encryption\Interfaces\KeyStorage;
 
 /**
- * Class TwoFAS
+ * This is the main SDK class that is used to interact with the API.
  *
  * @package TwoFAS\Api
  */
@@ -35,7 +36,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '4.0.2';
+    const VERSION = '4.0.3';
 
     /**
      * @var string
@@ -84,6 +85,8 @@ class TwoFAS
     }
 
     /**
+     * Set API url.
+     *
      * @param string $url
      *
      * @return TwoFAS
@@ -95,6 +98,8 @@ class TwoFAS
     }
 
     /**
+     * Set custom http client.
+     *
      * @param ClientInterface $httpClient
      *
      * @return TwoFAS
@@ -106,43 +111,9 @@ class TwoFAS
     }
 
     /**
-     * @param string $suffix
+     * Used for checking if number is valid and to unify format.
+     * You can store unified number in DB to prevent creation of multiple users with same phone number.
      *
-     * @return string
-     */
-    private function createEndpoint($suffix)
-    {
-        return $this->baseUrl . $this->version . $suffix;
-    }
-
-    /**
-     * @param string $method
-     * @param string $endpoint
-     * @param array  $data
-     *
-     * @return Response
-     */
-    private function call($method, $endpoint, array $data = array())
-    {
-        return $this->httpClient->request($method, $endpoint, $this->login, $this->key, $data, $this->headers);
-    }
-
-    /**
-     * @param IntegrationUser $user
-     *
-     * @throws AuthorizationException
-     * @throws InvalidNumberException
-     * @throws Exception
-     */
-    private function reformatPhoneNumber(IntegrationUser $user)
-    {
-        $phoneNumber = $user->getPhoneNumber()->phoneNumber();
-        if (!empty($phoneNumber)) {
-            $user->setPhoneNumber($this->formatNumber($phoneNumber)->phoneNumber());
-        }
-    }
-
-    /**
      * @param string $phoneNumber
      *
      * @return FormattedNumber
@@ -170,6 +141,10 @@ class TwoFAS
     }
 
     /**
+     * Used for requesting authentication of integration user.
+     * This method merges all authentication methods.
+     * Store authentication id for later use.
+     *
      * @param KeyStorage $keyStorage
      * @param string     $userId
      *
@@ -218,6 +193,9 @@ class TwoFAS
     }
 
     /**
+     * Used for requesting authentication on user via SMS.
+     * Store authentication id for later use.
+     *
      * @param string $phoneNumber
      *
      * @return Authentication
@@ -252,6 +230,9 @@ class TwoFAS
     }
 
     /**
+     * Used for requesting authentication on user via CALL.
+     * Store authentication id for later use.
+     *
      * @param string $phoneNumber
      *
      * @return Authentication
@@ -285,6 +266,9 @@ class TwoFAS
     }
 
     /**
+     * Used for requesting authentication on user via email.
+     * Store authentication id for later use.
+     *
      * @param string $email
      *
      * @return Authentication
@@ -313,6 +297,9 @@ class TwoFAS
     }
 
     /**
+     * Used for requesting authentication on user via TOTP (Time-based One-time Password Algorithm).
+     * Store authentication id for later use.
+     *
      * @param string $secret
      *
      * @return Authentication
@@ -375,12 +362,15 @@ class TwoFAS
     }
 
     /**
+     * Used for validating code entered by user.
+     *
      * @param AuthenticationCollection $collection
      * @param string                   $code
      *
-     * @return AcceptedCode|RejectedCodeCannotRetry|RejectedCodeCanRetry
+     * @return Code
      *
      * @throws AuthorizationException
+     * @throws ValidationException
      * @throws Exception
      */
     public function checkCode(AuthenticationCollection $collection, $code)
@@ -415,11 +405,18 @@ class TwoFAS
     }
 
     /**
+     * Used for validating backup code entered by user.
+     * Backup code is expected to be 12 non-omitted characters. Non-omitted characters consists of subsets:
+     * - letters: abcdefghjkmnpqrstuvwxyz
+     * - numbers: 23456789
+     *
+     * You can send code with or without - separators, code is not case-sensitive.
+     *
      * @param IntegrationUser          $user
      * @param AuthenticationCollection $collection
      * @param string                   $code
      *
-     * @return AcceptedCode|RejectedCodeCannotRetry|RejectedCodeCanRetry
+     * @return Code
      *
      * @throws ValidationException
      * @throws Exception
@@ -520,6 +517,8 @@ class TwoFAS
     }
 
     /**
+     * Used for getting paginated list of integration users from 2fas.
+     *
      * @param int|null $page
      *
      * @return array
@@ -552,6 +551,8 @@ class TwoFAS
     }
 
     /**
+     * Used for getting integration user from 2fas.
+     *
      * @param KeyStorage $keyStorage
      * @param string     $userId
      *
@@ -576,11 +577,15 @@ class TwoFAS
     }
 
     /**
+     * Used for get integration user from 2fas by your own id.
+     *
      * @param KeyStorage $keyStorage
      * @param string     $userExternalId
      *
      * @return IntegrationUser
      *
+     * @throws AuthorizationException
+     * @throws IntegrationUserNotFoundException
      * @throws Exception
      */
     public function getIntegrationUserByExternalId(KeyStorage $keyStorage, $userExternalId)
@@ -599,11 +604,15 @@ class TwoFAS
     }
 
     /**
+     * Used for adding integration user to 2fas.
+     *
      * @param KeyStorage      $keyStorage
      * @param IntegrationUser $user
      *
      * @return IntegrationUser
      *
+     * @throws AuthorizationException
+     * @throws ValidationException
      * @throws Exception
      */
     public function addIntegrationUser(KeyStorage $keyStorage, IntegrationUser $user)
@@ -627,11 +636,16 @@ class TwoFAS
     }
 
     /**
+     * Used for updating integration user in 2fas.
+     *
      * @param KeyStorage      $keyStorage
      * @param IntegrationUser $user
      *
      * @return IntegrationUser
      *
+     * @throws AuthorizationException
+     * @throws IntegrationUserNotFoundException
+     * @throws ValidationException
      * @throws Exception
      */
     public function updateIntegrationUser(KeyStorage $keyStorage, IntegrationUser $user)
@@ -652,10 +666,14 @@ class TwoFAS
     }
 
     /**
+     * Used for deleting integration user from 2fas.
+     *
      * @param string $userId
      *
      * @return bool
      *
+     * @throws AuthorizationException
+     * @throws IntegrationUserNotFoundException
      * @throws Exception
      */
     public function deleteIntegrationUser($userId)
@@ -674,10 +692,13 @@ class TwoFAS
     }
 
     /**
+     * Used for generating new backup codes for Integration Users.
+     *
      * @param IntegrationUser $user
      *
      * @return BackupCodesCollection
      *
+     * @throws AuthorizationException
      * @throws Exception
      */
     public function regenerateBackupCodes(IntegrationUser $user)
@@ -704,6 +725,8 @@ class TwoFAS
     }
 
     /**
+     * Used for displaying Statistics.
+     *
      * @return Statistics
      *
      * @throws AuthorizationException
@@ -798,5 +821,42 @@ class TwoFAS
         }, $parts);
 
         return implode('-', $parts);
+    }
+
+    /**
+     * @param string $suffix
+     *
+     * @return string
+     */
+    private function createEndpoint($suffix)
+    {
+        return $this->baseUrl . $this->version . $suffix;
+    }
+
+    /**
+     * @param string $method
+     * @param string $endpoint
+     * @param array  $data
+     *
+     * @return Response
+     */
+    private function call($method, $endpoint, array $data = array())
+    {
+        return $this->httpClient->request($method, $endpoint, $this->login, $this->key, $data, $this->headers);
+    }
+
+    /**
+     * @param IntegrationUser $user
+     *
+     * @throws AuthorizationException
+     * @throws InvalidNumberException
+     * @throws Exception
+     */
+    private function reformatPhoneNumber(IntegrationUser $user)
+    {
+        $phoneNumber = $user->getPhoneNumber()->phoneNumber();
+        if (!empty($phoneNumber)) {
+            $user->setPhoneNumber($this->formatNumber($phoneNumber)->phoneNumber());
+        }
     }
 }

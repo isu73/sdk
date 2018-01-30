@@ -3,7 +3,7 @@
 namespace TwoFAS\Api;
 
 /**
- * Class TotpSecretGenerator
+ * This class helps you generate totp secret.
  *
  * @package TwoFAS\Api
  */

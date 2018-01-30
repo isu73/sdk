@@ -1,956 +1,227 @@
-# Getting started
+# Getting started with 2FAS SDK
 
-## Install
+The 2FAS SDK makes it easy to interact with the API from your PHP application. 
+The latest version of the 2FAS SDK can be found on [Github](https://github.com/twofas/sdk). 
+The 2FAS SDK requires PHP version 5.3.3 or higher. 
 
-### via composer
 
-    composer require twofas/sdk : "3.*"
+Follow these steps to integrate your application with 2FAS:
 
-## Documentation
+1. [Installation and configuration](#installation-and-configuration)
+2. [User configuration](#user-configuration)
+3. [Using authentication](#using-authentication)
 
-### Creating client
 
-```php
-$twoFAS = new \TwoFAS\Api\TwoFAS('login', 'api_key');
-```
+**Full documentation for our SDK can be found [here](https://docs.2fas.com/apigen/Api)**
 
-### All methods
+## Installation and configuration
 
-All methods can throw following exceptions:
+### Prerequisites
 
-##### Unsuccessful
+Before you start using this SDK, 
+you have to create an [account](https://docs.2fas.com/getting-started) and have a *login* and *token* to authenticate.
 
-* `AuthorizationException` in case of invalid credentials
+### Installation
 
-```php
-Exception 'TwoFAS\Api\Exception\AuthorizationException'
-with message 'Invalid credentials'
-```
-* `Exception` in case of unspecified type of exception
-
-```php
-Exception 'TwoFAS\Api\Exception\Exception'
-with message 'Unsupported response'
-```
-
-Additional exceptions are described for each method
-
-### Methods
-
-#### formatNumber
-
-Used for checking if number is valid and to unify format.
-You can store unified number in DB to prevent creation of multiple users with same phone number.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$phoneNumber | `string` | Phone number in any format
-
-##### Example
+The SDK can only be installed using a composer.
+You can add the PHP SDK to your [composer.json](https://getcomposer.org/doc/04-schema.md) 
+file with the [require](https://getcomposer.org/doc/03-cli.md#require) command:
 
 ```php
-$formatted = $twoFAS->formatNumber('5123631111');
+composer require twofas/sdk : "4.*"
 ```
 
-##### Response
+If you are using a framework like Symfony or Laravel, the 2FAS SDK may be automatically loaded for you and ready to use in your application. 
+If you're using Composer in an environment that doesn't handle autoloading, you can require the autoload file from the "vendor" directory created by Composer if you used the install command above.
 
-###### Successful
-
-Returns [TwoFAS\Api\FormattedNumber](#formattednumber) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `InvalidNumberException` if you passed phone number that cannot be parsed
+### Creating SDK client
 
 ```php
-Exception 'TwoFAS\Api\Exception\InvalidNumberException'
-with message 'Invalid number'
+<?php
+// Required if your environment does not handle autoloading
+require __DIR__ . '/vendor/autoload.php';
+
+$login = '5a1cXXXXXXXX';
+$token = 'XXXXXXXXXXXXXXXXXXXXXXXXX...';
+
+$twoFAS = new \TwoFAS\Api\TwoFAS($login, $token);
 ```
 
-#### requestAuthViaSms
+### Encryption
 
-Used for requesting authentication on user via SMS.
-Store authentication id for later use.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$phoneNumber | `string` | Phone number in any format
-
-##### Example
+All sensitive data in 2FAS is encrypted on the client side, and we are not able to decrypt it.
+So, before sending it to 2FAS, you should encrypt them using our methods and keep the encryption key in your storage. 
+Out of the box we provide *AES* encryption. 
+All you have to do is implement *KeyStorage* interface with methods that *store* and *receive* data in your storage (eg. env, database).
+For example: if you want store key in environment file, you can generate and paste the string to the file, 
+and only retrieve from env in your storage:
 
 ```php
-$authentication = $twoFAS->requestAuthViaSms('5123631111');
-```
 
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\Authentication](#authentication) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `AuthenticationsLimitationException` if you make too many authentications in one hour (affects only development keys and phone based authentication types)
-
-```php
-Exception 'TwoFAS\Api\Exception\AuthenticationsLimitationException'
-with message 'Too many requests'
-```
-* `ChannelNotActiveException` if channel which is used to make authentication is not active
-
-```php
-Exception 'TwoFAS\Api\Exception\ChannelNotActiveException'
-with message 'Channel is not active'
-```
-* `CountryIsBlockedException` if number which is used to make authentication belongs to blocked country within integration
-
-```php
-Exception 'TwoFAS\Api\Exception\CountryIsBlockedException'
-with message 'Authorization request cannot be made due to blocked country'
-```
-* `InvalidDateException` in case of invalid date. 
-  Should only be expected when used outside of SDK.
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidDateException'
-with message ''
-```
-* `InvalidNumberException` if you passed phone number that cannot be parsed
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidNumberException'
-with message 'Invalid number'
-```
-* `NumbersLimitationException` if number which is used to make authentication is not on development key whitelist
-
-```php
-Exception 'TwoFAS\Api\Exception\NumbersLimitationException'
-with message 'Development keys can only send to white list'
-```
-* `PaymentException` if you used a method that requires payment and you cannot be charged
-
-```php
-Exception 'TwoFAS\Api\Exception\PaymentException'
-with message 'Payment required'
-```
-* `SmsToLandlineException` if you're trying to send sms to landline which doesn't support it
-
-```php
-Exception 'TwoFAS\Api\Exception\SmsToLandlineException'
-with message 'Cannot send sms to landline'
-```
-
-> SmsToLandlineException extends InvalidNumberException
-
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### requestAuthViaCall
-
-Used for requesting authentication on user via CALL.
-Store authentication id for later use.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$phoneNumber | `string` | Phone number in any format
-
-##### Example
-
-```php
-$authentication = $twoFAS->requestAuthViaCall('5123631111');
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\Authentication](#authentication) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `AuthenticationsLimitationException` if you make too many authentications in one hour (affects only development keys and phone based authentication types)
-
-```php
-Exception 'TwoFAS\Api\Exception\AuthenticationsLimitationException'
-with message 'Too many requests'
-```
-* `ChannelNotActiveException` if channel which is used to make authentication is not active
-
-```php
-Exception 'TwoFAS\Api\Exception\ChannelNotActiveException'
-with message 'Channel is not active'
-```
-* `CountryIsBlockedException` if number which is used to make authentication belongs to blocked country within integration
-
-```php
-Exception 'TwoFAS\Api\Exception\CountryIsBlockedException'
-with message 'Authorization request cannot be made due to blocked country'
-```
-* `InvalidDateException` in case of invalid date. 
-  Should only be expected when used outside of SDK.
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidDateException'
-with message ''
-```
-* `InvalidNumberException` if you passed phone number that cannot be parsed
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidNumberException'
-with message 'Invalid number'
-```
-* `NumbersLimitationException` if number which is used to make authentication is not on development key whitelist
-
-```php
-Exception 'TwoFAS\Api\Exception\NumbersLimitationException'
-with message 'Development keys can only send to white list'
-```
-* `PaymentException` if you used a method that requires payment and you cannot be charged
-
-```php
-Exception 'TwoFAS\Api\Exception\PaymentException'
-with message 'Payment required'
-```
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### requestAuthViaEmail
-
-Used for requesting authentication on user via email.
-Store authentication id for later use.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$email | `string` | Email address
-
-##### Example
-
-```php
-$authentication = $twoFAS->requestAuthViaEmail('example@example.com');
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\Authentication](#authentication) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `ChannelNotActiveException` if channel which is used to make authentication is not active
-
-```php
-Exception 'TwoFAS\Api\Exception\ChannelNotActiveException'
-with message 'Channel is not active'
-```
-* `InvalidDateException` in case of invalid date. 
-  Should only be expected when used outside of SDK.
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidDateException'
-with message ''
-```
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### requestAuthViaTotp
-
-Used for requesting authentication on user via TOTP (Time-based One-time Password Algorithm).
-Store authentication id for later use.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$secret | `string` | Totp secret in 16 base32 characters
-$mobileSecret | `string` or `null` | Secret used for push notifications
-
-##### Example
-
-```php
-$authentication = $twoFAS->requestAuthViaTotp('JBSWY3DPEHPK3PXP');
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\Authentication](#authentication) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `ChannelNotActiveException` if channel which is used to make authentication is not active
-
-```php
-Exception 'TwoFAS\Api\Exception\ChannelNotActiveException'
-with message 'Channel is not active'
-```
-* `InvalidDateException` in case of invalid date. 
-  Should only be expected when used outside of SDK.
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidDateException'
-with message ''
-```
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### requestAuth
-
-Used for requesting authentication on integration user.
-This method merge all previous authenticate methods.
-Store authentication id for later use.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$keyStorage | `KeyStorage` | Your class to keep Key used in encrypt/decrypt data
-$userId | `string` | Id of integration user who wants to authenticate
-
-##### Example
-
-```php
-$authentication = $twoFAS->requestAuth($keyStorage, '5788b5e5002f0');
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\Authentication](#authentication) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `AuthenticationsLimitationException` if you make too many authentications in one hour (affects only development keys and phone based authentication types)
-
-```php
-Exception 'TwoFAS\Api\Exception\AuthenticationsLimitationException'
-with message 'Too many requests'
-```
-* `ChannelNotActiveException` if channel which is used to make authentication is not active
-
-```php
-Exception 'TwoFAS\Api\Exception\ChannelNotActiveException'
-with message 'Channel is not active'
-```
-* `CountryIsBlockedException` if number which is used to make authentication belongs to blocked country within integration
-
-```php
-Exception 'TwoFAS\Api\Exception\CountryIsBlockedException'
-with message 'Authorization request cannot be made due to blocked country'
-```
-* `IntegrationUserHasNoActiveMethodException` if integration user haven't got active authenticate method
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserHasNoActiveMethodException'
-with message 'No active method'
-```
-* `IntegrationUserNotFoundException` if there is no integration user with requested id
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserNotFoundException'
-with message 'Integration user not found'
-```
-* `InvalidDateException` in case of invalid date. 
-  Should only be expected when used outside of SDK.
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidDateException'
-with message ''
-```
-* `InvalidNumberException` if you passed phone number that cannot be parsed
-
-```php
-Exception 'TwoFAS\Api\Exception\InvalidNumberException'
-with message 'Invalid number'
-```
-* `NumbersLimitationException` if number which is used to make authentication is not on development key whitelist
-
-```php
-Exception 'TwoFAS\Api\Exception\NumbersLimitationException'
-with message 'Development keys can only send to white list'
-```
-* `PaymentException` if you used a method that requires payment and you cannot be charged
-
-```php
-Exception 'TwoFAS\Api\Exception\PaymentException'
-with message 'Payment required'
-```
-* `SmsToLandlineException` if you're trying to send sms to landline which doesn't support it
-
-```php
-Exception 'TwoFAS\Api\Exception\SmsToLandlineException'
-with message 'Cannot send sms to landline'
-```
-
-> SmsToLandlineException extends InvalidNumberException
-
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### checkCode
-
-Used for validating code entered by user.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$collection | `AuthenticationCollection` | Collection of authentication ids
-$code | `string` | Code provided by user
-
-[AuthenticationCollection](#authentication-collection)
-
-##### Example
-
-```php
-$checkCode = $twoFAS->checkCode($collection, '123456');
-
-if ($checkCode->accepted()) {
-
-}
-```
-
-##### Response
-
-###### Successful
-
-Returns instance of [TwoFAS\Api\Code\Code](#code-interface) interface
-
-#### checkBackupCode
-
-Used for validating backup code entered by user.
-
-Backup code is expected to be 12 non-omitted characters.
-Non-omitted characters consists of subsets: 
-  - letters: `abcdefghjkmnpqrstuvwxyz`
-  - numbers: `23456789`
+<?php
+//generate AES Key
+$key = new \TwoFAS\Encryption\AESGeneratedKey();
+echo $key->getValue(); //paste to your environment file
+
+//only retrieve key from storage
+class EnvStorage implements \TwoFAS\Encryption\Interfaces\KeyStorage 
+{
+  public function storeKey(\TwoFAS\Encryption\Interfaces\Key $key)
+  {
+      //...}
+  }
   
-You can send code with or without `-` separators, code is not case-sensitive.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$user | `IntegrationUser` | User that wants to use backup code
-$collection | `AuthenticationCollection` | Collection of authentication ids
-$code | `string` | Code provided by user
-
-[AuthenticationCollection](#authentication-collection)
-
-##### Example
-
-```php
-try {
-    
-    $checkCode = $twoFAS->checkBackupCode($user, $collection, 'aaaa-bbbb-cccc');
-    
-    if ($checkCode->accepted()) {
-    
-    }
-    
-} catch (ValidationException $e) {
-    
+  public function retrieveKey()
+  {
+    return new \TwoFAS\Encryption\AESKey(env('AES_KEY'));
+  }
 }
 ```
 
-##### Response
+## User configuration
 
-###### Successful
+### Creating integration user
 
-Returns instance of [TwoFAS\Api\Code\Code](#code-interface) interface
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
+Each of your users should be represented by integration user in 2FAS 
+so you have to set your local user id as external id of integration user:
 
 ```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
+
+<?php
+// SDK client has to be created
+
+$myStorage = new MyStorage();
+$integrationUser = new \TwoFAS\Api\IntegrationUser();
+$integrationUser->setExternalId(123); //This is your local user id
+
+$twoFAS->addIntegrationUser($myStorage, $integrationUser);
 ```
 
-#### getIntegrationUsers
+### Generate QR Code
 
-Used for getting paginated list of integration users from 2fas.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$page | `int` or `null` | The page number from which you want to display the results
-
-##### Example
+Our main and default authentication method is TOTP. 
+To use it you have to generate a QR Code according to [this documentation](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) 
+and configure your mobile app and store data in *integration user*.
+Our SDK allows you to generate a QR code based on your string:
 
 ```php
-$usersData = $twoFAS->getIntegrationUsers();
+
+<?php
+
+$qrClient = new \TwoFAS\Api\QrCode\EndroidQrClient();
+$generator = new \TwoFAS\Api\QrCodeGenerator($qrClient);
+
+$uri = 'otpauth://totp/Acme:foo@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Acme';
+$imgSrc = $generator->generateBase64($uri);
+
+//in html:
+//<img src="{{ $imgSrc }}">
 ```
 
-##### Response
+### Configuring integration user
 
-###### Successful
-
-**Returns collection of IntegrationUsers**
-
-#### getIntegrationUser
-
-Used for get integration user from 2fas.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$keyStorage | `KeyStorage` | Your class to keep Key used in encrypt/decrypt data
-$userId | `string` | Id of integration user who wants to get
-
-
-##### Example
+Before using authentication, you have to configure one of the authentication methods: *totp, sms/vms* or *email*. 
+To do this, you need to verify that the user has provided the correct code.
+For example, we will open the TOTP authentication and validate the code generated from a mobile app:
 
 ```php
-$user = $twoFAS->addIntegrationUser($keyStorage, '5788b5e5002f0');
-```
 
-##### Response
+<?php
+// SDK client has to be created
 
-###### Successful
-
-Returns [TwoFAS\Api\IntegrationUser](#integrationuser) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `IntegrationUserNotFoundException` if there is no integration user with requested id
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserNotFoundException'
-with message 'Integration user not found'
-```
-
-#### getIntegrationUserByExternalId
-
-Used for get integration user from 2fas by your own id.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$keyStorage | `KeyStorage` | Your class to keep Key used in encrypt/decrypt data
-$userExternalId | `string` | External id of integration user who wants to get
-
-
-##### Example
-
-```php
-$user = $twoFAS->getIntegrationUserByExternalId($keyStorage, '468');
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\IntegrationUser](#integrationuser) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `IntegrationUserNotFoundException` if there is no integration user with requested id
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserNotFoundException'
-with message 'Integration user not found'
-```
-
-#### addIntegrationUser
-
-Used for add integration user to 2fas.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$keyStorage | `KeyStorage` | Your class to keep Key used in encrypt/decrypt data
-$user | `IntegrationUser` | User who want to add to 2fas
-
-
-##### Example
-
-```php
-$user = new IntegrationUser();
-$user
-    ->setActiveMethod('totp')
-    ->setTotpSecret('...')
-    //...
-$user = $twoFAS->addIntegrationUser($keyStorage, $user);
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\IntegrationUser](#integrationuser) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### updateIntegrationUser
-
-Used for update integration user in 2fas.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$keyStorage | `KeyStorage` | Your class to keep Key used in encrypt/decrypt data
-$user | `IntegrationUser` | User who want to update in 2fas
-
-
-##### Example
-
-```php
-$user = $twoFAS->getIntegrationUserByExternalId($keyStorage, '468');
-$user
-    ->setActiveMethod('totp')
-    ->setTotpSecret('...')
-    //...
-$user = $twoFAS->updateIntegrationUser($keyStorage, $user);
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\IntegrationUser](#integrationuser) object
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `IntegrationUserNotFoundException` if there is no integration user with requested id
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserNotFoundException'
-with message 'Integration user not found'
-```
-* `ValidationException` if you send invalid data in request [more](#more-validationexception)
-
-```php
-Exception 'TwoFAS\Api\Exception\ValidationException'
-with message 'Validation exception'
-```
-
-#### deleteIntegrationUser
-
-Used for delete integration user from 2fas.
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$userId | `string` | Id of integration user who wants to delete
-
-##### Example
-
-```php
-$user = $twoFAS->deleteIntegrationUser('5788b5e5002f0');
-```
-
-##### Response
-
-###### Successful
-
-Returns boolean (true)
-
-###### Unsuccessful
-
-Method can throw additional exceptions:
-
-* `IntegrationUserNotFoundException` if there is no integration user with requested id
-
-```php
-Exception 'TwoFAS\Api\Exception\IntegrationUserNotFoundException'
-with message 'Integration user not found'
-```
-
-#### regenerateBackupCodes
-
-Used for generating new backup codes for [Integration Users](#integrationuser)
-
-##### Parameters
-Name | Type | Description
---- | --- | ---
-$user | `IntegrationUser` | User who want to get new backup codes
-
-
-##### Example
-
-```php
-$backupCodes = $twoFAS->regenerateBackupCodes($user);
-```
-
-##### Response
-
-###### Successful
-
-Returns [TwoFAS\Api\BackupCodesCollection](#backup-codes-collection) object
-
-#### getStatistics
-
-Used for displaying [Statistics](#statistics).
-
-##### Example
-
-```php
-$statistics = $twoFAS->getStatistics();
-
-if ($statistics->getTotal() > 10) {
-
-}
-```
-
-##### Response
-
-###### Successful
-
-Returns [Statistics](#statistics)
-
-### Helpers
-
-#### QrCodeGenerator
-
-QrCodeGenerator object generates base64 encoded image of QR code,
-that can be easily displayed for user to scan it with smartphone.
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-generateBase64($text) | `string` | Returns base64 encoded image
-
-##### Usage
-```php
-$qrGen = new QrCodeGenerator(QrClientFactory::getInstance());
-$qrCode = $qrGen->generateBase64($userSecret);
-```
-#### Dates
-
-Dates object helps converting API date to DateTime object with correct
-time and timezone.
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-convertUTCFormatToLocal($date) | `DateTime` | Converts date format to DateTime
-
-##### Usage
-```php
-$date     = '2017-01-18 14:21:51';
-$dateTime = Dates::convertUTCFormatToLocal($date);
-```
-
-### Objects
-
-#### IntegrationUser
-
-IntegrationUser object is returned by [getIntegrationUser](#getintegrationuser) method.
-
-It is an [Entity](https://en.wikipedia.org/wiki/Entity) with methods:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-getId() | `string` | id
-getExternalId() | `string` | external id
-getActiveMethod() | `string` | active method
-getPhoneNumber() | `string` | phone number
-getTotpSecret() | `string` | totp secret
-getEmail() | `string` | email
-getMobileSecret() | `string` | mobile secret
-getBackupCodesCount() | `string` | backup codes count
-hasMobileUser() | `bool` | mobile user state
-
-##### Usage
-```php
-$user->getId();
-$user->getPhoneNumber();
-//...
-```
-#### FormattedNumber
-
-FormattedNumber object is returned by [formatNumber](#formatnumber) method.
-
-It is a [Value Object](https://en.wikipedia.org/wiki/Value_object) with one method:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-phoneNumber() | `string` | Formatted phone number
-
-
-##### Usage
-```php
-$formattedNumber->phoneNumber();
-```
-#### Code interface
-
-Code object is returned by [checkCode](#checkcode) method.
-
-It is a [Value Object](https://en.wikipedia.org/wiki/Value_object) with three methods:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-authentications() | `array` | Array of authentication ids
-accepted() | `boolean` | Result of code checking
-canRetry() | `boolean` | Ability to use same ids again
-
-
-##### Usage
-```php
-$code->accepted();
-$code->authentications();
-$code->canRetry();
-```
-#### Authentication
-
-Authentication object is returned by:
-
-* [requestAuth](#requestauth)
-* [requestAuthViaSms](#requestauthviasms)
-* [requestAuthViaCall](#requestauthviacall)
-* [requestAuthViaEmail](#requestauthviaemail)
-* [requestAuthViaTotp](#requestauthviatotp)
-
-It is an [Entity](https://en.wikipedia.org/wiki/Entity) with methods:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-id() | `string` | Authentication id
-createdAt() | `DateTime` | Date of creation (in local timezone)
-validTo() | `DateTime` | Date of end of validity (in local timezone)
-isValid() | `bool` | Validity date check
-
-##### Usage
-```php
-$authentication->id();
-$authentication->createdAt();
-$authentication->validTo();
-$authentication->isValid();
-```
-#### Authentication Collection
-
-Authentication Collection object is required by [checkCode](#checkcode) method.
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-add($authentication) | `void` | Adds [Authentication](#authentication) to collection
-getIds() | `array` | Returns array of authentications ids
-
-##### Usage
-```php
+$totpSecret = 'JBSWY3DPEHPK3PXP'; // from QR Code
+$totpCode = '210866'; // from text input, generated by mobile app
+$authentication = $twoFAS->requestAuthViaTotp($totpSecret);
+$authenticationCollection = new \TwoFAS\Api\AuthenticationCollection();
 $authenticationCollection->add($authentication);
+$result = $twoFAS->checkCode($authenticationCollection, $totpCode);
+
+if ($result->accepted()) {
+  // update user, described below
+} else {
+  // check other result types and handle them
+}
 ```
-#### BackupCode
 
-BackupCode object is returned in collection by:
+For other authentication methods the scenario looks similar, 
+but you have to send a code via *sms/vms* or *email* using our other authentication methods. 
+Keep in mind that *sms/vms* methods **are paid** so you have to add your credit card in 2FAS dashboard to work properly.
 
-* [regenerateBackupCodes](#regeneratebackupcodes)
+> Each authentication is valid for 15 minutes and the provided code can be checked up to 5 times.
 
-It is an [Entity](https://en.wikipedia.org/wiki/Entity) with method:
+### Updating integration user
 
-##### Methods
-Name | Type | Description
---- | --- | ---
-code() | `string` | code
+After successful configuration you have to update data in your *integration user*:
 
-##### Usage
 ```php
-$backupCode->code();
+
+<?php
+// SDK client has to be created
+
+$myStorage = new MyStorage();
+$localUserId = 123;
+$integrationUser = $twoFAS->getIntegrationUserByExternalId($myStorage, $localUserId);
+$integrationUser
+  ->setTotpSecret('JBSWY3DPEHPK3PXP') //if you're configuring TOTP
+  ->setPhoneNumber($this->formatNumber('+48 555 088013')) //if you're configuring SMS/VMS
+  ->setEmail('foo@example.com'); //if you're configuring EMAIL
+
+$twoFAS->updateIntegrationUser($myStorage, $integrationUser);
 ```
-#### Backup Codes Collection
 
-Backup Codes Collection object is a result of [regenerateBackupCodes](#regeneratebackupcodes) method.
+## Using authentication
 
-##### Methods
-Name | Type | Description
---- | --- | ---
-add($code) | `void` | Adds [BackupCode](#backupcode) to collection
-getCodes() | `array` | Returns array of backup codes
+## Creating authentication and check code
 
-##### Usage
+If your *integration user* has been configured successfully, 
+you can use it to open authentication in your login process as the second factor. 
+The authentication process looks very similar to the configuration, but instead of using the *secret* from QR code, 
+use the one from integration user:
+
 ```php
-$codesArray = $backupCodesCollection->getCodes();
+
+<?php
+// SDK client has to be created
+
+$totpCode = '210866'; // from text input, generated by mobile app
+$authentication = $twoFAS->requestAuthViaTotp($integrationUser->getTotpSecret());
+$authenticationCollection = new \TwoFAS\Api\AuthenticationCollection();
+$authenticationCollection->add($authentication);
+$result = $twoFAS->checkCode($authenticationCollection, $totpCode);
+
+if ($result->accepted()) {
+  // authentication ok, log in user
+} else {
+  // forbidden, check other result types and handle them
+}
 ```
-#### Statistics
 
-Statistics object is returned by:
+### Backup codes
 
-* [getStatistics](#getstatistics)
+2FAS also allows you to authenticate using backup codes that can be printed, 
+and then used to log in to your site in case you do not have your mobile device. 
+You can generate 5 backup codes at the same time and each code can only be used once.
 
-It is an [Entity](https://en.wikipedia.org/wiki/Entity) with methods:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-getAll() | `string` | array of all available statistics
-getTotal() | `string` | count of users
-
-##### Usage
 ```php
-$statistics->getTotal();
+
+<?php
+// SDK client has to be created
+
+//generate codes
+$codes = $twoFAS->regenerateBackupCodes($integrationUser);
+
+//open authentication
+$authentication = $twoFAS->requestAuthViaTotp($integrationUser->getTotpSecret());
+$authenticationCollection = new \TwoFAS\Api\AuthenticationCollection();
+$authenticationCollection->add($authentication);
+
+//check code
+$backupCode = 'XXXX-XXXX-XXXX';
+$result = $twoFAS->checkBackupCode($integrationUser, $authenticationCollection, $backupCode);
+
+if ($result->accepted()) {
+  // authentication ok, log in user
+} else {
+  // forbidden, check other result types and handle them
+}
 ```
-
-### More about exceptions
-
-#### more ValidationException
-
-Validation exceptions may contain multiple keys and rules.
-For simplicity of integrating this exception has few methods:
-
-##### Methods
-Name | Type | Description
---- | --- | ---
-getErrors() | `array` | Returns all errors as constants
-getError($key) | `array` or `null` | Returns all failing rules for key (as constants), or null if key passes validation
-getBareError($key) | `array` or `null` | Returns all failing rules for key (as bare strings), or null if key passes validation
-hasKey($key) | `boolean` | Check if certain field failed validation
-hasError($key, $rule) | `boolean` | Check if certain key failed specified rule
-

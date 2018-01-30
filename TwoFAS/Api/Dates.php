@@ -6,6 +6,11 @@ use DateTime;
 use DateTimeZone;
 use TwoFAS\Api\Exception\InvalidDateException;
 
+/**
+ * Dates object helps converting API date to DateTime object with correct timezone.
+ *
+ * @package TwoFAS\Api
+ */
 class Dates
 {
     /**
