@@ -27,12 +27,17 @@ The SDK can only be installed using a composer.
 You can add the PHP SDK to your [composer.json](https://getcomposer.org/doc/04-schema.md) 
 file with the [require](https://getcomposer.org/doc/03-cli.md#require) command:
 
-```php
-composer require twofas/sdk : "4.*"
+```bash
+composer require twofas/sdk
 ```
 
 If you are using a framework like Symfony or Laravel, the 2FAS SDK may be automatically loaded for you and ready to use in your application. 
 If you're using Composer in an environment that doesn't handle autoloading, you can require the autoload file from the "vendor" directory created by Composer if you used the install command above.
+
+### Upgrade
+
+If you're upgrading major version, please refer to 
+[upgrade guide](https://docs.2fas.com/sdk/Upgrade/).
 
 ### Creating SDK client
 
