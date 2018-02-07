@@ -8,9 +8,9 @@ use PHPUnit_Framework_TestCase;
 use TwoFAS\Api\HttpClient\ClientInterface;
 use TwoFAS\Api\IntegrationUser;
 use TwoFAS\Api\TwoFAS;
-use TwoFAS\Encryption\AESGeneratedKey;
+use TwoFAS\Encryption\AESKey;
 use TwoFAS\Encryption\DummyKeyStorage;
-use TwoFAS\Encryption\Interfaces\KeyStorage as KeyStorageInterface;
+use TwoFAS\Encryption\Interfaces\ReadKey;
 
 class LiveAndMockBase extends PHPUnit_Framework_TestCase
 {
@@ -25,7 +25,7 @@ class LiveAndMockBase extends PHPUnit_Framework_TestCase
     protected $httpClient;
 
     /**
-     * @var KeyStorageInterface
+     * @var ReadKey
      */
     protected $keyStorage;
 
@@ -59,7 +59,9 @@ class LiveAndMockBase extends PHPUnit_Framework_TestCase
         $this->env     = getenv('env');
         $this->baseUrl = getenv('base_url');
         $this->setUpTwoFAS(getenv('login'), getenv('key'), $this->mockedMethods);
-        $this->keyStorage = new DummyKeyStorage(new AESGeneratedKey());
+        $key              = new AESKey(base64_decode(getenv('aes_key')));
+        $this->keyStorage = new DummyKeyStorage();
+        $this->keyStorage->store($key);
     }
 
     protected function tearDown()
@@ -129,10 +131,6 @@ class LiveAndMockBase extends PHPUnit_Framework_TestCase
      */
     protected function isDevelopmentEnvironment()
     {
-        if ($this->env === 'dev') {
-            return true;
-        }
-
-        return false;
+        return $this->env === 'dev';
     }
 }

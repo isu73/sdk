@@ -24,7 +24,7 @@ use TwoFAS\Api\HttpClient\ClientInterface;
 use TwoFAS\Api\HttpClient\CurlClient;
 use TwoFAS\Api\Response\Response;
 use TwoFAS\Encryption\Cryptographer;
-use TwoFAS\Encryption\Interfaces\KeyStorage;
+use TwoFAS\Encryption\Interfaces\ReadKey;
 
 /**
  * This is the main SDK class that is used to interact with the API.
@@ -36,7 +36,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '4.0.6';
+    const VERSION = '5.0.0';
 
     /**
      * @var string
@@ -145,8 +145,8 @@ class TwoFAS
      * This method merges all authentication methods.
      * Store authentication id for later use.
      *
-     * @param KeyStorage $keyStorage
-     * @param string     $userId
+     * @param ReadKey $keyStorage
+     * @param string  $userId
      *
      * @return Authentication
      *
@@ -164,7 +164,7 @@ class TwoFAS
      * @throws ValidationException
      * @throws Exception
      */
-    public function requestAuth(KeyStorage $keyStorage, $userId)
+    public function requestAuth(ReadKey $keyStorage, $userId)
     {
         $user   = $this->getIntegrationUser($keyStorage, $userId);
         $method = $user->getActiveMethod();
@@ -553,8 +553,8 @@ class TwoFAS
     /**
      * Used for getting integration user from 2fas.
      *
-     * @param KeyStorage $keyStorage
-     * @param string     $userId
+     * @param ReadKey $keyStorage
+     * @param string  $userId
      *
      * @return IntegrationUser
      *
@@ -562,7 +562,7 @@ class TwoFAS
      * @throws IntegrationUserNotFoundException
      * @throws Exception
      */
-    public function getIntegrationUser(KeyStorage $keyStorage, $userId)
+    public function getIntegrationUser(ReadKey $keyStorage, $userId)
     {
         $response = $this->call(
             'GET',
@@ -579,8 +579,8 @@ class TwoFAS
     /**
      * Used for get integration user from 2fas by your own id.
      *
-     * @param KeyStorage $keyStorage
-     * @param string     $userExternalId
+     * @param ReadKey $keyStorage
+     * @param string  $userExternalId
      *
      * @return IntegrationUser
      *
@@ -588,7 +588,7 @@ class TwoFAS
      * @throws IntegrationUserNotFoundException
      * @throws Exception
      */
-    public function getIntegrationUserByExternalId(KeyStorage $keyStorage, $userExternalId)
+    public function getIntegrationUserByExternalId(ReadKey $keyStorage, $userExternalId)
     {
         $response = $this->call(
             'GET',
@@ -606,7 +606,7 @@ class TwoFAS
     /**
      * Used for adding integration user to 2fas.
      *
-     * @param KeyStorage      $keyStorage
+     * @param ReadKey         $keyStorage
      * @param IntegrationUser $user
      *
      * @return IntegrationUser
@@ -615,7 +615,7 @@ class TwoFAS
      * @throws ValidationException
      * @throws Exception
      */
-    public function addIntegrationUser(KeyStorage $keyStorage, IntegrationUser $user)
+    public function addIntegrationUser(ReadKey $keyStorage, IntegrationUser $user)
     {
         $this->reformatPhoneNumber($user);
 
@@ -638,7 +638,7 @@ class TwoFAS
     /**
      * Used for updating integration user in 2fas.
      *
-     * @param KeyStorage      $keyStorage
+     * @param ReadKey         $keyStorage
      * @param IntegrationUser $user
      *
      * @return IntegrationUser
@@ -648,7 +648,7 @@ class TwoFAS
      * @throws ValidationException
      * @throws Exception
      */
-    public function updateIntegrationUser(KeyStorage $keyStorage, IntegrationUser $user)
+    public function updateIntegrationUser(ReadKey $keyStorage, IntegrationUser $user)
     {
         $this->reformatPhoneNumber($user);
 
@@ -747,12 +747,12 @@ class TwoFAS
     }
 
     /**
-     * @param KeyStorage $keyStorage
-     * @param Response   $response
+     * @param ReadKey  $keyStorage
+     * @param Response $response
      *
      * @return IntegrationUser
      */
-    private function hydrateIntegrationUserFromResponse(KeyStorage $keyStorage, Response $response)
+    private function hydrateIntegrationUserFromResponse(ReadKey $keyStorage, Response $response)
     {
         $data          = $response->getData();
         $cryptographer = Cryptographer::getInstance($keyStorage);

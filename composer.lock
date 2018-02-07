@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7e0615a4175a68e33ff69550effe410e",
-    "content-hash": "47d2fd066b7495a46a4997ed3891045d",
+    "hash": "38f055234cec635ade45fdf70f94b5de",
+    "content-hash": "565381c2ab79085b185a18fd6f941a24",
     "packages": [
         {
             "name": "endroid/qr-code",
@@ -59,16 +59,16 @@
         },
         {
             "name": "twofas/encryption",
-            "version": "v2.1.1",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twofas/encryption.git",
-                "reference": "38df9b1a8f3a7bc073d43e5a99b2227685fa39db"
+                "reference": "d40b2e98fe23d51414d6adc1bddecad53d5c6738"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twofas/encryption/zipball/38df9b1a8f3a7bc073d43e5a99b2227685fa39db",
-                "reference": "38df9b1a8f3a7bc073d43e5a99b2227685fa39db",
+                "url": "https://api.github.com/repos/twofas/encryption/zipball/d40b2e98fe23d51414d6adc1bddecad53d5c6738",
+                "reference": "d40b2e98fe23d51414d6adc1bddecad53d5c6738",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                 }
             ],
             "description": "Encryption for TwoFAS data.",
-            "time": "2018-01-09 10:31:34"
+            "time": "2018-02-07 09:06:22"
         },
         {
             "name": "twofas/validation-rules",

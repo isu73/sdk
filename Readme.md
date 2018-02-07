@@ -57,7 +57,7 @@ $twoFAS = new \TwoFAS\Api\TwoFAS($login, $token);
 All sensitive data in 2FAS is encrypted on the client side, and we are not able to decrypt it.
 So, before sending it to 2FAS, you should encrypt them using our methods and keep the encryption key in your storage. 
 Out of the box we provide *AES* encryption. 
-All you have to do is implement *KeyStorage* interface with methods that *store* and *receive* data in your storage (eg. env, database).
+All you have to do is implement *ReadKey* interface which retrieves data from your storage (eg. env, database).
 For example: if you want store key in environment file, you can generate and paste the string to the file, 
 and only retrieve from env in your storage:
 
@@ -69,14 +69,9 @@ $key = new \TwoFAS\Encryption\AESGeneratedKey();
 echo $key->getValue(); //paste to your environment file
 
 //only retrieve key from storage
-class EnvStorage implements \TwoFAS\Encryption\Interfaces\KeyStorage 
-{
-  public function storeKey(\TwoFAS\Encryption\Interfaces\Key $key)
-  {
-      //...}
-  }
-  
-  public function retrieveKey()
+class EnvStorage implements \TwoFAS\Encryption\Interfaces\ReadKey 
+{  
+  public function retrieve()
   {
     return new \TwoFAS\Encryption\AESKey(env('AES_KEY'));
   }

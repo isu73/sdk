@@ -1,5 +1,11 @@
 # Upgrade
 
+### 4.0.6 > 5.0.0
+
+#### Storage
+KeyStorage interface is split into ReadKey and WriteKey, so you don't have to implement 
+`write` when you don't need it.
+
 ### 3.0.15 > 4.0.0
 
 #### Encryption Keys
