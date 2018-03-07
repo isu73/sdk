@@ -1,5 +1,5 @@
 {
-    "name": "twofas/sdk-private",
+    "name": "twofas/sdk",
     "description": "SDK for 2fas.com API",
     "type": "library",
     "license": "MIT",
@@ -21,7 +21,9 @@
         "twofas/validation-rules": "~1.0"
     },
     "require-dev" : {
-        "phpunit/phpunit": "4.5.0"
+        "phpunit/phpunit": "4.5.0",
+        "squizlabs/php_codesniffer": "^2.2",
+        "wimg/php-compatibility": "^8.0"
     },
     "autoload": {
         "psr-4": {

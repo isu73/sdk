@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<ruleset name="Custom ruleset">
+    <description>Rules for PHP 5.3</description>
+    <config name="installed_paths" value="vendor/wimg/php-compatibility" />
+    <config name="testVersion" value="5.3-"/>
+
+    <rule ref="PHPCompatibility"/>
+
+    <file>TwoFAS</file>
+    <file>tests</file>
+
+</ruleset>

@@ -3,19 +3,19 @@
 namespace TwoFAS\Api;
 
 /**
- * It's a simply Value Object that stores phone number.
+ * It's a simple Value Object that stores phone number.
  *
  * @package TwoFAS\Api
  */
 final class FormattedNumber
 {
     /**
-     * @var string
+     * @var null|string
      */
     private $phoneNumber;
 
     /**
-     * @param string $phoneNumber
+     * @param null|string $phoneNumber
      */
     public function __construct($phoneNumber)
     {
@@ -23,7 +23,7 @@ final class FormattedNumber
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function phoneNumber()
     {
