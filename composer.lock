@@ -104,16 +104,16 @@
         },
         {
             "name": "twofas/validation-rules",
-            "version": "v1.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twofas/validation-rules.git",
-                "reference": "0b9ae7818d451c32d4380f739c1abed5975c71b3"
+                "reference": "7a5c7126843d218623a8cffebfa4a22bd8ce157c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twofas/validation-rules/zipball/0b9ae7818d451c32d4380f739c1abed5975c71b3",
-                "reference": "0b9ae7818d451c32d4380f739c1abed5975c71b3",
+                "url": "https://api.github.com/repos/twofas/validation-rules/zipball/7a5c7126843d218623a8cffebfa4a22bd8ce157c",
+                "reference": "7a5c7126843d218623a8cffebfa4a22bd8ce157c",
                 "shasum": ""
             },
             "require": {
@@ -139,7 +139,7 @@
                 }
             ],
             "description": "Validation rules for SDK",
-            "time": "2017-10-03T10:47:45+00:00"
+            "time": "2018-05-18T12:24:10+00:00"
         }
     ],
     "packages-dev": [
