@@ -33,7 +33,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'sms',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));
@@ -41,7 +41,7 @@ class TwoFASTest extends LiveAndMockBase
         if ($this->isDevelopmentEnvironment()) {
             $response = array_merge(
                 $this->getNewAuthenticationResponse(),
-                array('phone_number' => '+48603322424')
+                array('phone_number' => '+48512256400')
             );
 
             $this->httpClient->method('request')->willReturn(ResponseGenerator::createFrom(json_encode($response), HttpCodes::OK));
@@ -61,7 +61,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'call',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));
@@ -69,7 +69,7 @@ class TwoFASTest extends LiveAndMockBase
         if ($this->isDevelopmentEnvironment()) {
             $response = array_merge(
                 $this->getNewAuthenticationResponse(),
-                array('phone_number' => '+48603322424')
+                array('phone_number' => '+48512256400')
             );
 
             $this->httpClient->method('request')->willReturn(ResponseGenerator::createFrom(json_encode($response), HttpCodes::OK));
@@ -251,7 +251,7 @@ class TwoFASTest extends LiveAndMockBase
             $this->httpClient->method('request')->willReturn(ResponseGenerator::createFrom(json_encode($response), HttpCodes::FORBIDDEN));
         }
 
-        $this->twoFAS->requestAuthViaSms("+48603322424");
+        $this->twoFAS->requestAuthViaSms("+48512256400");
     }
 
     public function testAuthenticationCollection()
@@ -355,7 +355,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'sms',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));
@@ -388,7 +388,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'sms',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));
@@ -422,7 +422,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'sms',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));
@@ -450,7 +450,7 @@ class TwoFASTest extends LiveAndMockBase
         $this->createIntegrationUser(array(
             'id'            => uniqid(),
             'active_method' => 'sms',
-            'phone_number'  => '+48603322424',
+            'phone_number'  => '+48512256400',
             'email'         => '',
             'totp_secret'   => ''
         ));

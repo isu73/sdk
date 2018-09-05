@@ -36,7 +36,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '5.0.5';
+    const VERSION = '5.0.6';
 
     /**
      * @var string

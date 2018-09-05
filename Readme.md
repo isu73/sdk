@@ -1,8 +1,8 @@
 # Getting started with 2FAS SDK
 
-The 2FAS SDK makes it easy to interact with the API from your PHP application. 
-The latest version of the 2FAS SDK can be found on [Github](https://github.com/twofas/sdk). 
-The 2FAS SDK requires PHP version 5.3.3 or higher. 
+The 2FAS SDK makes it easy to interact with the API from your PHP application.
+The latest version of the 2FAS SDK can be found on [Github](https://github.com/twofas/sdk).
+The 2FAS SDK requires PHP version 5.3.3 or higher.
 
 
 Follow these steps to integrate your application with 2FAS:
@@ -18,25 +18,25 @@ Follow these steps to integrate your application with 2FAS:
 
 ### Prerequisites
 
-Before you start using this SDK, 
+Before you start using this SDK,
 you have to create an [account](https://docs.2fas.com/getting-started) and have a *login* and *token* to authenticate.
 
 ### Installation
 
 The SDK can only be installed using a composer.
-You can add the PHP SDK to your [composer.json](https://getcomposer.org/doc/04-schema.md) 
+You can add the PHP SDK to your [composer.json](https://getcomposer.org/doc/04-schema.md)
 file with the [require](https://getcomposer.org/doc/03-cli.md#require) command:
 
 ```bash
 composer require twofas/sdk
 ```
 
-If you are using a framework like Symfony or Laravel, the 2FAS SDK may be automatically loaded for you and ready to use in your application. 
+If you are using a framework like Symfony or Laravel, the 2FAS SDK may be automatically loaded for you and ready to use in your application.
 If you're using Composer in an environment that doesn't handle autoloading, you can require the autoload file from the "vendor" directory created by Composer if you used the install command above.
 
 ### Upgrade
 
-If you're upgrading major version, please refer to 
+If you're upgrading major version, please refer to
 [upgrade guide](https://docs.2fas.com/sdk/Upgrade/).
 
 ### Creating SDK client
@@ -46,6 +46,7 @@ If you're upgrading major version, please refer to
 // Required if your environment does not handle autoloading
 require __DIR__ . '/vendor/autoload.php';
 
+// Copy from your 2FAS dashboard
 $login = '5a1cXXXXXXXX';
 $token = 'XXXXXXXXXXXXXXXXXXXXXXXXX...';
 
@@ -55,10 +56,11 @@ $twoFAS = new \TwoFAS\Api\TwoFAS($login, $token);
 ### Encryption
 
 All sensitive data in 2FAS is encrypted on the client side, and we are not able to decrypt it.
-So, before sending it to 2FAS, you should encrypt them using our methods and keep the encryption key in your storage. 
-Out of the box we provide *AES* encryption. 
+So, before sending it to 2FAS, you should encrypt them using our methods and keep the encryption key in your storage.
+Out of the box we provide *AES* encryption.
 All you have to do is implement *ReadKey* interface which retrieves data from your storage (eg. env, database).
-For example: if you want store key in environment file, you can generate and paste the string to the file, 
+Remember that the key is in byte format so you should encode it before save, and decode after read - you can use for example `base64_encode` and `base64_decode` function.
+If you want store key in environment file, you can generate and paste the string to the file,
 and only retrieve from env in your storage:
 
 ```php
@@ -66,14 +68,14 @@ and only retrieve from env in your storage:
 <?php
 //generate AES Key
 $key = new \TwoFAS\Encryption\AESGeneratedKey();
-echo $key->getValue(); //paste to your environment file
+echo base64_encode($key->getValue()); //paste to your environment file
 
 //only retrieve key from storage
-class EnvStorage implements \TwoFAS\Encryption\Interfaces\ReadKey 
-{  
+class EnvStorage implements \TwoFAS\Encryption\Interfaces\ReadKey
+{
   public function retrieve()
   {
-    return new \TwoFAS\Encryption\AESKey(env('AES_KEY'));
+    return new \TwoFAS\Encryption\AESKey(base64_decode(getenv('AES_KEY')));
   }
 }
 ```
@@ -82,7 +84,7 @@ class EnvStorage implements \TwoFAS\Encryption\Interfaces\ReadKey
 
 ### Creating integration user
 
-Each of your users should be represented by integration user in 2FAS 
+Each of your users should be represented by integration user in 2FAS
 so you have to set your local user id as external id of integration user:
 
 ```php
@@ -90,7 +92,7 @@ so you have to set your local user id as external id of integration user:
 <?php
 // SDK client has to be created
 
-$myStorage = new MyStorage();
+$myStorage = new EnvStorage();
 $integrationUser = new \TwoFAS\Api\IntegrationUser();
 $integrationUser->setExternalId(123); //This is your local user id
 
@@ -99,8 +101,8 @@ $twoFAS->addIntegrationUser($myStorage, $integrationUser);
 
 ### Generate QR Code
 
-Our main and default authentication method is TOTP. 
-To use it you have to generate a QR Code according to [this documentation](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) 
+Our main and default authentication method is TOTP.
+To use it you have to generate a QR Code according to [this documentation](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
 and configure your mobile app and store data in *integration user*.
 Our SDK allows you to generate a QR code based on your string:
 
@@ -120,7 +122,7 @@ $imgSrc = $generator->generateBase64($uri);
 
 ### Configuring integration user
 
-Before using authentication, you have to configure one of the authentication methods: *totp, sms/vms* or *email*. 
+Before using authentication, you have to configure one of the authentication methods: *totp, sms/vms* or *email*.
 To do this, you need to verify that the user has provided the correct code.
 For example, we will open the TOTP authentication and validate the code generated from a mobile app:
 
@@ -143,8 +145,8 @@ if ($result->accepted()) {
 }
 ```
 
-For other authentication methods the scenario looks similar, 
-but you have to send a code via *sms/vms* or *email* using our other authentication methods. 
+For other authentication methods the scenario looks similar,
+but you have to send a code via *sms/vms* or *email* using our other authentication methods.
 Keep in mind that *sms/vms* methods **are paid** so you have to add your credit card in 2FAS dashboard to work properly.
 
 > Each authentication is valid for 15 minutes and the provided code can be checked up to 5 times.
@@ -173,9 +175,9 @@ $twoFAS->updateIntegrationUser($myStorage, $integrationUser);
 
 ## Creating authentication and check code
 
-If your *integration user* has been configured successfully, 
-you can use it to open authentication in your login process as the second factor. 
-The authentication process looks very similar to the configuration, but instead of using the *secret* from QR code, 
+If your *integration user* has been configured successfully,
+you can use it to open authentication in your login process as the second factor.
+The authentication process looks very similar to the configuration, but instead of using the *secret* from QR code,
 use the one from integration user:
 
 ```php
@@ -198,8 +200,8 @@ if ($result->accepted()) {
 
 ### Backup codes
 
-2FAS also allows you to authenticate using backup codes that can be printed, 
-and then used to log in to your site in case you do not have your mobile device. 
+2FAS also allows you to authenticate using backup codes that can be printed,
+and then used to log in to your site in case you do not have your mobile device.
 You can generate 5 backup codes at the same time and each code can only be used once.
 
 ```php
@@ -216,7 +218,7 @@ $authenticationCollection = new \TwoFAS\Api\AuthenticationCollection();
 $authenticationCollection->add($authentication);
 
 //check code
-$backupCode = 'XXXX-XXXX-XXXX';
+$backupCode = 'XXXX-XXXX-XXXX'; // from text input
 $result = $twoFAS->checkBackupCode($integrationUser, $authenticationCollection, $backupCode);
 
 if ($result->accepted()) {

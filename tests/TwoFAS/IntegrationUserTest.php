@@ -358,7 +358,7 @@ class IntegrationUserTest extends LiveAndMockBase
 
         $response = $this->twoFAS->getIntegrationUsers();
 
-        $this->assertEquals(array_keys($response), array_keys($expectedStructure));
+        $this->assertEquals($this->sortedArrayKeys($response), $this->sortedArrayKeys($expectedStructure));
         $this->assertCount(3, $response['data']);
     }
 
@@ -483,5 +483,18 @@ class IntegrationUserTest extends LiveAndMockBase
 
         $this->setExpectedException('\TwoFAS\Api\Exception\IntegrationUserNotFoundException');
         $this->twoFAS->deleteIntegrationUser('abc123');
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function sortedArrayKeys(array $data)
+    {
+        $data = array_keys($data);
+        sort($data);
+
+        return $data;
     }
 }
