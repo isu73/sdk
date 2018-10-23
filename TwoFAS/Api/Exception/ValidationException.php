@@ -2,8 +2,8 @@
 
 namespace TwoFAS\Api\Exception;
 
-use TwoFAS\Api\ValidationRules;
 use TwoFAS\ValidationRules\ValidationExceptionInterface;
+use TwoFAS\ValidationRules\ValidationRules;
 
 /**
  * Validation Exceptions may contain multiple keys and rules.

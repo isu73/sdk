@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d8ebea7992bab0393dba280de397921",
+    "content-hash": "f8903dee8f5c6cda7439e51b32e0a471",
     "packages": [
         {
             "name": "endroid/qr-code",
@@ -58,16 +58,16 @@
         },
         {
             "name": "twofas/encryption",
-            "version": "v3.0.1",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twofas/encryption.git",
-                "reference": "d40b2e98fe23d51414d6adc1bddecad53d5c6738"
+                "reference": "7be586110b276bd1059093ff5aa0fb6bf6f14913"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twofas/encryption/zipball/d40b2e98fe23d51414d6adc1bddecad53d5c6738",
-                "reference": "d40b2e98fe23d51414d6adc1bddecad53d5c6738",
+                "url": "https://api.github.com/repos/twofas/encryption/zipball/7be586110b276bd1059093ff5aa0fb6bf6f14913",
+                "reference": "7be586110b276bd1059093ff5aa0fb6bf6f14913",
                 "shasum": ""
             },
             "require": {
@@ -100,7 +100,7 @@
                 }
             ],
             "description": "Encryption for TwoFAS data.",
-            "time": "2018-02-07T09:06:22+00:00"
+            "time": "2018-08-27T13:07:15+00:00"
         },
         {
             "name": "twofas/validation-rules",
@@ -1239,7 +1239,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.3",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

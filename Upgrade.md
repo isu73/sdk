@@ -1,5 +1,16 @@
 # Upgrade
 
+### 5.0.0 > 6.0.0
+
+#### ValidationRules
+Deprecated class has been removed, use `TwoFAS\ValidationRules\ValidationRules` instead.
+
+#### IntegrationUser
+Field 'active_method' has been removed.
+
+#### RequestAuth
+Method has been removed, use specific type of authentication instead.
+
 ### 4.0.6 > 5.0.0
 
 #### Storage

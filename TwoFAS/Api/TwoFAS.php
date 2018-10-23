@@ -12,7 +12,6 @@ use TwoFAS\Api\Exception\AuthorizationException;
 use TwoFAS\Api\Exception\ChannelNotActiveException;
 use TwoFAS\Api\Exception\CountryIsBlockedException;
 use TwoFAS\Api\Exception\Exception;
-use TwoFAS\Api\Exception\IntegrationUserHasNoActiveMethodException;
 use TwoFAS\Api\Exception\IntegrationUserNotFoundException;
 use TwoFAS\Api\Exception\InvalidDateException;
 use TwoFAS\Api\Exception\InvalidNumberException;
@@ -36,7 +35,7 @@ class TwoFAS
     /**
      * @var string
      */
-    const VERSION = '5.0.6';
+    const VERSION = '6.0.0';
 
     /**
      * @var string
@@ -138,58 +137,6 @@ class TwoFAS
         }
 
         throw $response->getError();
-    }
-
-    /**
-     * Used for requesting authentication of integration user.
-     * This method merges all authentication methods.
-     * Store authentication id for later use.
-     *
-     * @param ReadKey $keyStorage
-     * @param string  $userId
-     *
-     * @return Authentication
-     *
-     * @throws AuthenticationLimitationException
-     * @throws AuthorizationException
-     * @throws ChannelNotActiveException
-     * @throws CountryIsBlockedException
-     * @throws IntegrationUserHasNoActiveMethodException
-     * @throws IntegrationUserNotFoundException
-     * @throws InvalidDateException
-     * @throws InvalidNumberException
-     * @throws NumberLimitationException
-     * @throws PaymentException
-     * @throws SmsToLandlineException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function requestAuth(ReadKey $keyStorage, $userId)
-    {
-        $user   = $this->getIntegrationUser($keyStorage, $userId);
-        $method = $user->getActiveMethod();
-
-        if (Methods::SMS === $method) {
-            return $this->requestAuthViaSms($user->getPhoneNumber()->phoneNumber());
-        }
-
-        if (Methods::CALL === $method) {
-            return $this->requestAuthViaCall($user->getPhoneNumber()->phoneNumber());
-        }
-
-        if (Methods::EMAIL === $method) {
-            return $this->requestAuthViaEmail($user->getEmail());
-        }
-
-        if (Methods::TOTP === $method) {
-            return $this->requestAuthViaTotp($user->getTotpSecret());
-        }
-
-        if (null === $method) {
-            throw new IntegrationUserHasNoActiveMethodException('No active method');
-        }
-
-        throw new Exception('Unsupported method');
     }
 
     /**
@@ -725,28 +672,6 @@ class TwoFAS
     }
 
     /**
-     * Used for displaying Statistics.
-     *
-     * @return Statistics
-     *
-     * @throws AuthorizationException
-     * @throws Exception
-     */
-    public function getStatistics()
-    {
-        $response = $this->call(
-            'GET',
-            $this->createEndpoint('/users_statistic')
-        );
-
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
-            return new Statistics($response->getData());
-        }
-
-        throw $response->getError();
-    }
-
-    /**
      * @param ReadKey  $keyStorage
      * @param Response $response
      *
@@ -760,7 +685,6 @@ class TwoFAS
         $user
             ->setId($data['id'])
             ->setExternalId($data['external_id'])
-            ->setActiveMethod($data['active_method'])
             ->setMobileSecret($data['mobile_secret'])
             ->setBackupCodesCount($data['backup_codes_count'])
             ->setHasMobileUser($data['has_mobile_user'])
@@ -839,6 +763,8 @@ class TwoFAS
      * @param array  $data
      *
      * @return Response
+     *
+     * @throws Exception
      */
     private function call($method, $endpoint, array $data = array())
     {

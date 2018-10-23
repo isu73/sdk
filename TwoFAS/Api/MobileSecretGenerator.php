@@ -2,7 +2,8 @@
 
 namespace TwoFAS\Api;
 
-use TwoFAS\Encryption\Random\RandomGenerator;
+use TwoFAS\Encryption\Random\NonCryptographicalRandomIntGenerator;
+use TwoFAS\Encryption\Random\RandomStringGenerator;
 
 /**
  * This class helps you generate mobile secret.
@@ -16,8 +17,9 @@ class MobileSecretGenerator
      */
     public static function generate()
     {
-        $generator = new RandomGenerator();
+        $intGenerator    = new NonCryptographicalRandomIntGenerator();
+        $stringGenerator = new RandomStringGenerator($intGenerator);
 
-        return $generator->alphaNum(32)->toLower()->__toString();
+        return $stringGenerator->alphaNum(32)->toLower()->__toString();
     }
 }

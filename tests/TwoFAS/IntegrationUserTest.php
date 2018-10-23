@@ -18,7 +18,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $phoneNumber      = '+48600700800';
         $totpSecret       = 'PEHMPSDNLXIOG65U';
         $email            = 'aaa@2fas.com';
-        $activeMethod     = 'totp';
         $backupCodesCount = 3;
 
         $user = new IntegrationUser();
@@ -28,7 +27,6 @@ class IntegrationUserTest extends LiveAndMockBase
             ->setPhoneNumber($phoneNumber)
             ->setTotpSecret($totpSecret)
             ->setEmail($email)
-            ->setActiveMethod($activeMethod)
             ->setBackupCodesCount($backupCodesCount);
 
         $this->assertEquals($id, $user->getId());
@@ -36,71 +34,60 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->assertEquals($phoneNumber, $user->getPhoneNumber()->phoneNumber());
         $this->assertEquals($totpSecret, $user->getTotpSecret());
         $this->assertEquals($email, $user->getEmail());
-        $this->assertEquals($activeMethod, $user->getActiveMethod());
         $this->assertEquals($backupCodesCount, $user->getBackupCodesCount());
     }
 
     public function testSetNullValues()
     {
-        $externalId   = 321;
-        $mobileUserId = 111;
-        $phoneNumber  = '+48600700800';
-        $totpSecret   = 'PEHMPSDNLXIOG65U';
-        $email        = 'aaa@2fas.com';
-        $activeMethod = 'totp';
+        $externalId  = 321;
+        $phoneNumber = '+48600700800';
+        $totpSecret  = 'PEHMPSDNLXIOG65U';
+        $email       = 'aaa@2fas.com';
 
         $user = new IntegrationUser();
         $user
             ->setExternalId($externalId)
             ->setPhoneNumber($phoneNumber)
             ->setTotpSecret($totpSecret)
-            ->setEmail($email)
-            ->setActiveMethod($activeMethod);
+            ->setEmail($email);
 
         $user
             ->setExternalId(null)
             ->setPhoneNumber(null)
             ->setTotpSecret(null)
-            ->setEmail(null)
-            ->setActiveMethod(null);
+            ->setEmail(null);
 
         $this->assertNull($user->getExternalId());
         $this->assertNull($user->getPhoneNumber()->phoneNumber());
         $this->assertNull($user->getTotpSecret());
         $this->assertNull($user->getEmail());
-        $this->assertNull($user->getActiveMethod());
     }
 
     public function testEmptyStringValues()
     {
-        $externalId   = 321;
-        $phoneNumber  = '+48600700800';
-        $totpSecret   = 'PEHMPSDNLXIOG65U';
-        $email        = 'aaa@2fas.com';
-        $activeMethod = 'totp';
+        $externalId  = 321;
+        $phoneNumber = '+48600700800';
+        $totpSecret  = 'PEHMPSDNLXIOG65U';
+        $email       = 'aaa@2fas.com';
 
         $user = new IntegrationUser();
         $user
             ->setExternalId($externalId)
             ->setPhoneNumber($phoneNumber)
             ->setTotpSecret($totpSecret)
-            ->setEmail($email)
-            ->setActiveMethod($activeMethod);
+            ->setEmail($email);
 
         $user
-            ->setExternalId("")
-            ->setPhoneNumber("")
-            ->setTotpSecret("")
-            ->setEmail("")
-            ->setActiveMethod("");
+            ->setExternalId('')
+            ->setPhoneNumber('')
+            ->setTotpSecret('')
+            ->setEmail('');
 
         $this->assertNull($user->getExternalId());
         $this->assertNull($user->getPhoneNumber()->phoneNumber());
         $this->assertNull($user->getTotpSecret());
         $this->assertNull($user->getEmail());
-        $this->assertNull($user->getActiveMethod());
     }
-
 
     public function testCastToString()
     {
@@ -108,15 +95,13 @@ class IntegrationUserTest extends LiveAndMockBase
         $user
             ->setId(123)
             ->setExternalId(123)
-            ->setActiveMethod(123)
             ->setTotpSecret(123)
             ->setEmail(123);
 
-        $this->assertInternalType("string", $user->getId());
-        $this->assertInternalType("string", $user->getExternalId());
-        $this->assertInternalType("string", $user->getActiveMethod());
-        $this->assertInternalType("string", $user->getTotpSecret());
-        $this->assertInternalType("string", $user->getEmail());
+        $this->assertInternalType('string', $user->getId());
+        $this->assertInternalType('string', $user->getExternalId());
+        $this->assertInternalType('string', $user->getTotpSecret());
+        $this->assertInternalType('string', $user->getEmail());
     }
 
     public function testSetEmptyId()
@@ -141,7 +126,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $user = new IntegrationUser();
         $user
             ->setExternalId($externalId)
-            ->setActiveMethod('totp')
             ->setPhoneNumber('+48500600700')
             ->setEmail('aaa@2fas.com')
             ->setTotpSecret('PEHMPSDNLXIOG65U')
@@ -151,7 +135,6 @@ class IntegrationUserTest extends LiveAndMockBase
             $response = array(
                 'id'                 => $id,
                 'external_id'        => $externalId,
-                'active_method'      => $user->getActiveMethod(),
                 'phone_number'       => $user->getPhoneNumber()->phoneNumber(),
                 'email'              => $user->getEmail(),
                 'totp_secret'        => $user->getTotpSecret(),
@@ -170,7 +153,6 @@ class IntegrationUserTest extends LiveAndMockBase
         }
 
         $this->assertEquals($user->getExternalId(), $addedUser->getExternalId());
-        $this->assertEquals($user->getActiveMethod(), $addedUser->getActiveMethod());
         $this->assertEquals($user->getPhoneNumber()->phoneNumber(), $addedUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals($user->getEmail(), $addedUser->getEmail());
         $this->assertEquals($user->getTotpSecret(), $addedUser->getTotpSecret());
@@ -183,10 +165,10 @@ class IntegrationUserTest extends LiveAndMockBase
     {
         if ($this->isDevelopmentEnvironment()) {
             $json = json_encode(array('error' => array(
-                "code" => 9030,
-                "msg"  => array(
-                    "active_method" => array(
-                        "validation.valid_method"
+                'code' => 9030,
+                'msg'  => array(
+                    'mobile_secret' => array(
+                        'validation.size.string'
                     )
                 )
             )));
@@ -197,7 +179,7 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->setExpectedException('\TwoFAS\Api\Exception\ValidationException');
 
         $user = new IntegrationUser();
-        $user->setActiveMethod('invalid');
+        $user->setMobileSecret('invalid');
 
         $this->twoFAS->addIntegrationUser($this->keyStorage, $user);
     }
@@ -205,16 +187,13 @@ class IntegrationUserTest extends LiveAndMockBase
     public function testAddIntegrationUserWithNonProvidedPhoneNumber()
     {
         $user = new IntegrationUser();
-        $user
-            ->setActiveMethod('totp')
-            ->setTotpSecret('PEHMPSDNLXIOG65U');
+        $user->setTotpSecret('PEHMPSDNLXIOG65U');
 
         if ($this->isDevelopmentEnvironment()) {
             $id       = uniqid();
             $response = array(
                 'id'                 => $id,
                 'external_id'        => null,
-                'active_method'      => $user->getActiveMethod(),
                 'phone_number'       => null,
                 'email'              => null,
                 'totp_secret'        => $user->getTotpSecret(),
@@ -233,16 +212,14 @@ class IntegrationUserTest extends LiveAndMockBase
     {
         $user = new IntegrationUser();
         $user
-            ->setActiveMethod('totp')
-            ->setPhoneNumber("")
-            ->setEmail("")
+            ->setPhoneNumber('')
+            ->setEmail('')
             ->setTotpSecret('PEHMPSDNLXIOG65U');
 
         if ($this->isDevelopmentEnvironment()) {
             $id       = uniqid();
             $response = array(
                 'id'                 => $id,
-                'active_method'      => $user->getActiveMethod(),
                 'phone_number'       => null,
                 'email'              => null,
                 'totp_secret'        => $user->getTotpSecret(),
@@ -268,7 +245,6 @@ class IntegrationUserTest extends LiveAndMockBase
     public function testUpdateIntegrationUser(IntegrationUser $user)
     {
         $user
-            ->setActiveMethod('totp')
             ->setPhoneNumber('+48500200300')
             ->setEmail('aaa@2fas.com')
             ->setTotpSecret('PEHMPSDNLXIOG666')
@@ -278,7 +254,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $response = array(
             'id'                 => $user->getId(),
             'external_id'        => $user->getExternalId(),
-            'active_method'      => $user->getActiveMethod(),
             'phone_number'       => $user->getPhoneNumber()->phoneNumber(),
             'email'              => $user->getEmail(),
             'totp_secret'        => $user->getTotpSecret(),
@@ -295,7 +270,6 @@ class IntegrationUserTest extends LiveAndMockBase
 
         $this->assertInstanceOf('\TwoFAS\Api\IntegrationUser', $updatedUser);
         $this->assertEquals($response['id'], $updatedUser->getId());
-        $this->assertEquals($response['active_method'], $updatedUser->getActiveMethod());
         $this->assertEquals($response['phone_number'], $updatedUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals($response['totp_secret'], $updatedUser->getTotpSecret());
         $this->assertEquals($response['backup_codes_count'], $updatedUser->getBackupCodesCount());
@@ -315,10 +289,10 @@ class IntegrationUserTest extends LiveAndMockBase
     {
         if ($this->isDevelopmentEnvironment()) {
             $json = json_encode(array('error' => array(
-                "code" => 9030,
-                "msg"  => array(
-                    "active_method" => array(
-                        "validation.valid_method"
+                'code' => 9030,
+                'msg'  => array(
+                    'mobile_secret' => array(
+                        'validation.size.string'
                     )
                 )
             )));
@@ -329,7 +303,7 @@ class IntegrationUserTest extends LiveAndMockBase
 
         $this->setExpectedException('\TwoFAS\Api\Exception\ValidationException');
 
-        $user->setActiveMethod('invalid_method');
+        $user->setMobileSecret('invalid_method');
         $this->twoFAS->updateIntegrationUser($this->keyStorage, $user);
     }
 
@@ -379,7 +353,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $response = array(
             'id'                 => uniqid(),
             'external_id'        => null,
-            'active_method'      => 'totp',
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
@@ -402,7 +375,6 @@ class IntegrationUserTest extends LiveAndMockBase
             $this->assertEquals($response['external_id'], $responseUser->getExternalId());
         }
 
-        $this->assertEquals($response['active_method'], $responseUser->getActiveMethod());
         $this->assertEquals('+48500200300', $responseUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals('aaa@2fas.com', $responseUser->getEmail());
         $this->assertEquals('PEHMPSDNLXIOG666', $responseUser->getTotpSecret());
@@ -420,7 +392,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $response = array(
             'id'                 => uniqid(),
             'external_id'        => 'my_database_id_' . uniqid(),
-            'active_method'      => 'totp',
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
@@ -443,7 +414,6 @@ class IntegrationUserTest extends LiveAndMockBase
             $this->assertEquals($response['external_id'], $responseUser->getExternalId());
         }
 
-        $this->assertEquals($response['active_method'], $responseUser->getActiveMethod());
         $this->assertEquals($response['backup_codes_count'], $responseUser->getBackupCodesCount());
         $this->assertEquals('+48500200300', $responseUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals('aaa@2fas.com', $responseUser->getEmail());
@@ -473,8 +443,8 @@ class IntegrationUserTest extends LiveAndMockBase
     {
         if ($this->isDevelopmentEnvironment()) {
             $json = json_encode(array('error' => array(
-                "code" => 9031,
-                "msg"  => "Integration user not found"
+                'code' => 9031,
+                'msg'  => 'Integration user not found'
             )));
 
             $this->httpClient->method('request')->willReturn(ResponseGenerator::createFrom($json, HttpCodes::NOT_FOUND));

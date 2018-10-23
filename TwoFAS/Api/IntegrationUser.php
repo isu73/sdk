@@ -25,11 +25,6 @@ final class IntegrationUser
     /**
      * @var null|string
      */
-    private $activeMethod;
-
-    /**
-     * @var null|string
-     */
     private $phoneNumber;
 
     /**
@@ -102,29 +97,6 @@ final class IntegrationUser
             return $this;
         }
         $this->externalId = (string) $externalId;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getActiveMethod()
-    {
-        return $this->activeMethod;
-    }
-
-    /**
-     * @param null|string $activeMethod
-     *
-     * @return IntegrationUser
-     */
-    public function setActiveMethod($activeMethod)
-    {
-        if (null === $activeMethod || '' === $activeMethod) {
-            $this->activeMethod = null;
-            return $this;
-        }
-        $this->activeMethod = (string) $activeMethod;
         return $this;
     }
 
@@ -273,14 +245,13 @@ final class IntegrationUser
      */
     public function getEncryptedDataAsArray(Cryptographer $cryptographer)
     {
-        $data                   = array();
-        $data['id']             = $this->id;
-        $data['external_id']    = $this->externalId;
-        $data['active_method']  = $this->activeMethod;
-        $data['mobile_secret']  = $this->mobileSecret;
-        $data['phone_number']   = $cryptographer->encrypt($this->getPhoneNumber()->phoneNumber());
-        $data['email']          = $cryptographer->encrypt($this->getEmail());
-        $data['totp_secret']    = $cryptographer->encrypt($this->getTotpSecret());
+        $data                  = array();
+        $data['id']            = $this->id;
+        $data['external_id']   = $this->externalId;
+        $data['mobile_secret'] = $this->mobileSecret;
+        $data['phone_number']  = $cryptographer->encrypt($this->getPhoneNumber()->phoneNumber());
+        $data['email']         = $cryptographer->encrypt($this->getEmail());
+        $data['totp_secret']   = $cryptographer->encrypt($this->getTotpSecret());
 
         return $data;
     }

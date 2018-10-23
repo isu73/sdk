@@ -12,13 +12,16 @@ class DatesTest extends PHPUnit_Framework_TestCase
      */
     private $dateFormat = 'Y-m-d H:i:s';
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
+    protected function setUp()
     {
-        parent::__construct($name, $data, $dataName);
+        parent::setUp();
 
         $this->setLocalTimezone();
     }
 
+    /**
+     * @throws \TwoFAS\Api\Exception\InvalidDateException
+     */
     public function testCallingDatesWithDifferentFormat()
     {
         $this->setExpectedException('TwoFAS\Api\Exception\InvalidDateException');
@@ -26,6 +29,9 @@ class DatesTest extends PHPUnit_Framework_TestCase
         Dates::convertUTCFormatToLocal('19:20:34 2001/09/13');
     }
 
+    /**
+     * @throws \TwoFAS\Api\Exception\InvalidDateException
+     */
     public function testDateFromApiWillShowAsLocalDate()
     {
         $utcDate       = '2017-01-18 14:21:51';

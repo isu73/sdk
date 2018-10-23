@@ -3,11 +3,15 @@
 namespace TwoFAS\Api\tests;
 
 use PHPUnit_Framework_TestCase;
+use ReflectionException;
 use ReflectionMethod;
 use TwoFAS\Api\HttpClient\CurlClient;
 
 class CurlClientTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @throws ReflectionException
+     */
     public function testMapHeaders()
     {
         $sourceHeaders = array(

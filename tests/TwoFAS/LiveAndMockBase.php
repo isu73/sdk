@@ -3,8 +3,11 @@
 namespace TwoFAS\Api\tests\TwoFAS;
 
 use CurlClientProxy;
+use DateTime;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use TwoFAS\Api\Authentication;
+use TwoFAS\Api\AuthenticationCollection;
 use TwoFAS\Api\HttpClient\ClientInterface;
 use TwoFAS\Api\IntegrationUser;
 use TwoFAS\Api\TwoFAS;
@@ -105,7 +108,6 @@ class LiveAndMockBase extends PHPUnit_Framework_TestCase
         $user = new IntegrationUser();
         $user
             ->setId($data['id'])
-            ->setActiveMethod($data['active_method'])
             ->setPhoneNumber($data['phone_number'])
             ->setEmail($data['email'])
             ->setTotpSecret($data['totp_secret'])
@@ -132,5 +134,55 @@ class LiveAndMockBase extends PHPUnit_Framework_TestCase
     protected function isDevelopmentEnvironment()
     {
         return $this->env === 'dev';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getBackupCodesArray()
+    {
+        return array(
+            'yx5w-Xhui-JzMN',
+            'kAec-t6PD-eIsL',
+            '5au1-IOiH-ksBq',
+            '5au1-t6PD-ksBq',
+            '5au1-Xhui-ksBq'
+        );
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return AuthenticationCollection
+     */
+    protected function makeAuthenticationCollection(array $ids)
+    {
+        $collection = new AuthenticationCollection();
+
+        foreach ($ids as $id) {
+            $collection->add(new Authentication($id, $this->getDate(), $this->getDateIn15InFormat()));
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @return DateTime
+     */
+    protected function getDate()
+    {
+        return new DateTime();
+    }
+
+    /**
+     * @return DateTime
+     */
+    protected function getDateIn15InFormat()
+    {
+        $time = time() + 60 * 15;
+
+        $date = new DateTime();
+
+        return $date->setTimestamp($time);
     }
 }

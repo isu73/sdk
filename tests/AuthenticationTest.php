@@ -34,9 +34,9 @@ class AuthenticationTest extends PHPUnit_Framework_TestCase
      */
     private $time20Ago;
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
+    protected function setUp()
     {
-        parent::__construct($name, $data, $dataName);
+        parent::setUp();
 
         $this->setLocalTimezone();
 
@@ -73,7 +73,7 @@ class AuthenticationTest extends PHPUnit_Framework_TestCase
 
     private function getTimeInLocalTimezone($timestamp)
     {
-        return new DateTime("@$timestamp", $this->getLocalTimezone());
+        return new DateTime("@{$timestamp}", $this->getLocalTimezone());
     }
 
     /**
