@@ -1,5 +1,11 @@
 # Upgrade
 
+### 6.0.0 > 7.0.0
+Main class renamed to `Sdk`.
+Php version requirement increased to `>=5.4`
+Added optional caching for `formatNumber` method, by default uses regular array.
+Class `AuthenticationCollection` has been removed, all methods previously using it take array of ids instead.
+
 ### 5.0.0 > 6.0.0
 
 #### ValidationRules

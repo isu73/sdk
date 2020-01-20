@@ -1,9 +1,9 @@
 <?php
 
-namespace TwoFAS\Api\tests;
+namespace TwoFAS\Api;
 
 use PHPUnit_Framework_TestCase;
-use TwoFAS\Api\Dates;
+use TwoFAS\Api\Exception\InvalidDateException;
 
 class DatesTest extends PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class DatesTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \TwoFAS\Api\Exception\InvalidDateException
+     * @throws InvalidDateException
      */
     public function testCallingDatesWithDifferentFormat()
     {
@@ -30,7 +30,7 @@ class DatesTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \TwoFAS\Api\Exception\InvalidDateException
+     * @throws InvalidDateException
      */
     public function testDateFromApiWillShowAsLocalDate()
     {

@@ -21,10 +21,8 @@
     <php>
         <env name="env" value="dev"/>
         <env name="base_url" value="http://localhost"/>
-        <env name="login" value="test"/>
-        <env name="key" value="test"/>
-        <env name="second_login" value="test2"/>
-        <env name="second_key" value="test2"/>
+        <env name="oauth_token" value="test"/>
+        <env name="second_oauth_token" value="test"/>
         <env name="aes_key" value="R88anQzqpwl5BQPu6oM0Egs4xcyumfLyf+6dFS2kple9xQTb7WhAUA0jyYM9XstdxEyr0TFW3wr5yGQhJY+LkmL5iLjO0VNZg3KNkAj9Kqc5qy2815WquZ1InqnP9aG0ygWtuESa7k4yAPd6HSBhKqMJeyK1iwIrZLlkdTaHi3U="/>
     </php>
 </phpunit>

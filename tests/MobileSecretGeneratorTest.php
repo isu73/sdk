@@ -1,9 +1,8 @@
 <?php
 
-namespace TwoFAS\Api\tests;
+namespace TwoFAS\Api;
 
 use PHPUnit_Framework_TestCase;
-use TwoFAS\Api\MobileSecretGenerator;
 
 class MobileSecretGeneratorTest extends PHPUnit_Framework_TestCase
 {

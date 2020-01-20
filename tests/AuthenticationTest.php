@@ -1,11 +1,10 @@
 <?php
 
-namespace TwoFAS\Api\tests;
+namespace TwoFAS\Api;
 
 use DateTime;
 use DateTimeZone;
 use PHPUnit_Framework_TestCase;
-use TwoFAS\Api\Authentication;
 
 class AuthenticationTest extends PHPUnit_Framework_TestCase
 {
