@@ -47,7 +47,6 @@ If you're upgrading major version, please refer to
 require __DIR__ . '/vendor/autoload.php';
 
 // Copy from your 2FAS dashboard
-$login = '5a1cXXXXXXXX';
 $token = 'XXXXXXXXXXXXXXXXXXXXXXXXX...';
 
 $sdk = new \TwoFAS\Api\Sdk($token);

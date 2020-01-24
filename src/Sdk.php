@@ -34,7 +34,7 @@ class Sdk
     /**
      * @var string
      */
-    const VERSION = '7.0.1';
+    const VERSION = '7.0.2';
 
     /**
      * @var string
