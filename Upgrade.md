@@ -2,7 +2,8 @@
 
 ### 6.0.0 > 7.0.0
 Main class renamed to `Sdk`.
-Php version requirement increased to `>=5.4`
+Php version requirement increased to `>=5.4`.
+Uses OAuth, you can generate token in [dashboard](https://dashboard.2fas.com).
 Added optional caching for `formatNumber` method, by default uses regular array.
 Class `AuthenticationCollection` has been removed, all methods previously using it take array of ids instead.
 
