@@ -9,6 +9,7 @@ use TwoFAS\Api\Exception\Exception;
 use TwoFAS\Api\Exception\IntegrationUserNotFoundException;
 use TwoFAS\Api\Exception\InvalidNumberException;
 use TwoFAS\Api\Exception\PaymentException;
+use TwoFAS\Api\Exception\ResourceNotFoundException;
 use TwoFAS\Api\Exception\SmsToLandlineException;
 use TwoFAS\Api\Exception\ValidationException;
 use TwoFAS\Api\HttpCodes;
@@ -73,6 +74,8 @@ class Response
             return new CountryIsBlockedException((string) $this->data['error']['msg']);
         } else if ($this->matchesHttpAndErrorCode(HttpCodes::NOT_FOUND, Errors::INTEGRATION_USER_NOT_FOUND_ERROR)) {
             return new IntegrationUserNotFoundException((string) $this->data['error']['msg']);
+        } else if ($this->matchesHttpAndErrorCode(HttpCodes::NOT_FOUND, Errors::RESOURCE_NOT_FOUND)) {
+            return new ResourceNotFoundException((string) $this->data['error']['msg']);
         } else if ($this->matchesHttpAndErrorCode(HttpCodes::BAD_REQUEST, Errors::USER_INPUT_ERROR)) {
             return new ValidationException($this->data['error']['msg'], $this->data['error']['code']);
         }

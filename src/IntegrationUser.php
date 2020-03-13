@@ -40,7 +40,7 @@ final class IntegrationUser
     /**
      * @var null|string
      */
-    private $mobileSecret;
+    private $pushId;
 
     /**
      * @var int
@@ -172,24 +172,46 @@ final class IntegrationUser
     /**
      * @return null|string
      */
-    public function getMobileSecret()
+    public function getPushId()
     {
-        return $this->mobileSecret;
+        return $this->pushId;
     }
 
     /**
+     * @param null|string $pushId
+     *
+     * @return IntegrationUser
+     */
+    public function setPushId($pushId)
+    {
+        if (null === $pushId || '' === $pushId) {
+            $this->pushId = null;
+            return $this;
+        }
+        $this->pushId = (string) $pushId;
+        return $this;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return null|string
+     */
+    public function getMobileSecret()
+    {
+        return $this->getPushId();
+    }
+
+    /**
+     * @deprecated
+     *
      * @param null|string $mobileSecret
      *
      * @return IntegrationUser
      */
     public function setMobileSecret($mobileSecret)
     {
-        if (null === $mobileSecret || '' === $mobileSecret) {
-            $this->mobileSecret = null;
-            return $this;
-        }
-        $this->mobileSecret = (string) $mobileSecret;
-        return $this;
+        return $this->setPushId($mobileSecret);
     }
 
     /**
@@ -246,12 +268,12 @@ final class IntegrationUser
     public function getEncryptedDataAsArray(Cryptographer $cryptographer)
     {
         return [
-            'id'            => $this->id,
-            'external_id'   => $this->externalId,
-            'mobile_secret' => $this->mobileSecret,
-            'phone_number'  => $cryptographer->encrypt($this->getPhoneNumber()->phoneNumber()),
-            'email'         => $cryptographer->encrypt($this->getEmail()),
-            'totp_secret'   => $cryptographer->encrypt($this->getTotpSecret())
+            'id'           => $this->id,
+            'external_id'  => $this->externalId,
+            'push_id'      => $this->pushId,
+            'phone_number' => $cryptographer->encrypt($this->getPhoneNumber()->phoneNumber()),
+            'email'        => $cryptographer->encrypt($this->getEmail()),
+            'totp_secret'  => $cryptographer->encrypt($this->getTotpSecret())
         ];
     }
 }

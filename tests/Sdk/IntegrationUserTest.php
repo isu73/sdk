@@ -166,7 +166,7 @@ class IntegrationUserTest extends LiveAndMockBase
             $data = ['error' => [
                 'code' => 9030,
                 'msg'  => [
-                    'mobile_secret' => [
+                    'push_id' => [
                         'validation.size.string'
                     ]
                 ]
@@ -286,7 +286,7 @@ class IntegrationUserTest extends LiveAndMockBase
             $data = ['error' => [
                 'code' => 9030,
                 'msg'  => [
-                    'mobile_secret' => [
+                    'push_id' => [
                         'validation.size.string'
                     ]
                 ]
@@ -347,7 +347,7 @@ class IntegrationUserTest extends LiveAndMockBase
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
-            'mobile_secret'      => uniqid('', true),
+            'push_id'            => uniqid('', true),
             'has_mobile_user'    => false,
             'mobile_user_id'     => null,
             'backup_codes_count' => 0
@@ -385,7 +385,7 @@ class IntegrationUserTest extends LiveAndMockBase
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
-            'mobile_secret'      => uniqid('', true),
+            'push_id'            => uniqid('', true),
             'has_mobile_user'    => false,
             'mobile_user_id'     => null,
             'backup_codes_count' => 0
@@ -431,14 +431,14 @@ class IntegrationUserTest extends LiveAndMockBase
     {
         if ($this->isDevelopmentEnvironment()) {
             $data = ['error' => [
-                'code' => 9031,
-                'msg'  => 'Integration user not found'
+                'code' => 9080,
+                'msg'  => 'Resource not found'
             ]];
 
             $this->nextApiCallWillReturn($data, HttpCodes::NOT_FOUND);
         }
 
-        $this->setExpectedException('\TwoFAS\Api\Exception\IntegrationUserNotFoundException');
+        $this->setExpectedException('\TwoFAS\Api\Exception\ResourceNotFoundException');
         $this->sdk->deleteIntegrationUser('abc123');
     }
 

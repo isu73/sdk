@@ -12,10 +12,10 @@ use TwoFAS\Api\Code\RejectedCodeCanRetry;
 use TwoFAS\Api\Exception\AuthorizationException;
 use TwoFAS\Api\Exception\CountryIsBlockedException;
 use TwoFAS\Api\Exception\Exception;
-use TwoFAS\Api\Exception\IntegrationUserNotFoundException;
 use TwoFAS\Api\Exception\InvalidDateException;
 use TwoFAS\Api\Exception\InvalidNumberException;
 use TwoFAS\Api\Exception\PaymentException;
+use TwoFAS\Api\Exception\ResourceNotFoundException;
 use TwoFAS\Api\Exception\SmsToLandlineException;
 use TwoFAS\Api\Exception\ValidationException;
 use TwoFAS\Api\HttpClient\ClientInterface;
@@ -34,7 +34,7 @@ class Sdk
     /**
      * @var string
      */
-    const VERSION = '7.0.2';
+    const VERSION = '7.1.0';
 
     /**
      * @var string
@@ -45,11 +45,6 @@ class Sdk
      * @var string
      */
     private $baseUrl = 'https://api.2fas.com';
-
-    /**
-     * @var string
-     */
-    private $version = '/v2';
 
     /**
      * @var ClientInterface
@@ -165,7 +160,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/format_number'),
+            $this->createEndpoint('v2/format_number'),
             [
                 'phone_number' => $phoneNumber
             ]
@@ -200,7 +195,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/auth/sms'),
+            $this->createEndpoint('v2/auth/sms'),
             [
                 'phone_number' => (string) $phoneNumber
             ]
@@ -233,7 +228,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/auth/vms'),
+            $this->createEndpoint('v2/auth/vms'),
             [
                 'phone_number' => (string) $phoneNumber
             ]
@@ -263,7 +258,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/auth/email'),
+            $this->createEndpoint('v2/auth/email'),
             [
                 'email' => (string) $email
             ]
@@ -293,7 +288,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/auth/totp'),
+            $this->createEndpoint('v2/auth/totp'),
             [
                 'totp_secret' => (string) $secret
             ]
@@ -323,7 +318,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/auth/totp/mobile'),
+            $this->createEndpoint('v2/auth/totp/mobile'),
             [
                 'totp_secret'     => (string) $secret,
                 'mobile_secret'   => (string) $mobileSecret,
@@ -355,7 +350,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/verify'),
+            $this->createEndpoint('v2/verify'),
             [
                 'authentications' => $authentications,
                 'code'            => (string) $code
@@ -401,7 +396,7 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint("/verify/user/{$user->getId()}/backup"),
+            $this->createEndpoint("v2/verify/user/{$user->getId()}/backup"),
             [
                 'authentications' => $authentications,
                 'code'            => (string) $code
@@ -443,7 +438,7 @@ class Sdk
 
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/integration/authenticate_channel'),
+            $this->createEndpoint('v2/integration/authenticate_channel'),
             [
                 'channel_name' => (string) $channelName,
                 'socket_id'    => (string) $socketId
@@ -477,7 +472,7 @@ class Sdk
 
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/integration/channel/' . $channelName . '/status/' . $statusId),
+            $this->createEndpoint('v2/integration/channel/' . $channelName . '/status/' . $statusId),
             [
                 'status' => (string) $status
             ]
@@ -502,7 +497,7 @@ class Sdk
      */
     public function getIntegrationUsers($page = null)
     {
-        $url = '/users';
+        $url = 'v3/users';
 
         if (!is_null($page) && !is_int($page)) {
             throw new InvalidArgumentException('Page number is not valid.');
@@ -533,14 +528,14 @@ class Sdk
      * @return IntegrationUser
      *
      * @throws AuthorizationException
-     * @throws IntegrationUserNotFoundException
+     * @throws ResourceNotFoundException
      * @throws Exception
      */
     public function getIntegrationUser(ReadKey $keyStorage, $userId)
     {
         $response = $this->call(
             'GET',
-            $this->createEndpoint('/users/' . $userId)
+            $this->createEndpoint('v3/users/' . $userId)
         );
 
         if ($response->matchesHttpCode(HttpCodes::OK)) {
@@ -559,14 +554,14 @@ class Sdk
      * @return IntegrationUser
      *
      * @throws AuthorizationException
-     * @throws IntegrationUserNotFoundException
+     * @throws ResourceNotFoundException
      * @throws Exception
      */
     public function getIntegrationUserByExternalId(ReadKey $keyStorage, $userExternalId)
     {
         $response = $this->call(
             'GET',
-            $this->createEndpoint('/users_external/' . $userExternalId),
+            $this->createEndpoint('v3/users_external/' . $userExternalId),
             []
         );
 
@@ -595,7 +590,7 @@ class Sdk
 
         $response = $this->call(
             'POST',
-            $this->createEndpoint('/users'),
+            $this->createEndpoint('v3/users'),
             $user->getEncryptedDataAsArray(Cryptographer::getInstance($keyStorage))
         );
 
@@ -618,7 +613,7 @@ class Sdk
      * @return IntegrationUser
      *
      * @throws AuthorizationException
-     * @throws IntegrationUserNotFoundException
+     * @throws ResourceNotFoundException
      * @throws ValidationException
      * @throws Exception
      */
@@ -628,7 +623,7 @@ class Sdk
 
         $response = $this->call(
             'PUT',
-            $this->createEndpoint('/users/' . $user->getId()),
+            $this->createEndpoint('v3/users/' . $user->getId()),
             $user->getEncryptedDataAsArray(Cryptographer::getInstance($keyStorage))
         );
 
@@ -647,14 +642,14 @@ class Sdk
      * @return bool
      *
      * @throws AuthorizationException
-     * @throws IntegrationUserNotFoundException
+     * @throws ResourceNotFoundException
      * @throws Exception
      */
     public function deleteIntegrationUser($userId)
     {
         $response = $this->call(
             'DELETE',
-            $this->createEndpoint('/users/' . $userId),
+            $this->createEndpoint('v3/users/' . $userId),
             []
         );
 
@@ -679,7 +674,7 @@ class Sdk
     {
         $response = $this->call(
             'PATCH',
-            $this->createEndpoint('/users/' . $user->getId() . '/backup_codes')
+            $this->createEndpoint('v2/users/' . $user->getId() . '/backup_codes')
         );
 
         if ($response->matchesHttpCode(HttpCodes::OK)) {
@@ -739,7 +734,7 @@ class Sdk
      */
     private function createEndpoint($suffix)
     {
-        return $this->baseUrl . $this->version . $suffix;
+        return $this->baseUrl . '/' . $suffix;
     }
 
     /**

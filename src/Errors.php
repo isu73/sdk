@@ -17,4 +17,5 @@ class Errors
     const INVALID_CODE_ERROR_CAN_RETRY     = 9061;
     const INVALID_CODE_ERROR_CAN_NOT_RETRY = 9062;
     const NO_AUTHENTICATIONS               = 9070;
+    const RESOURCE_NOT_FOUND               = 9080;
 }
