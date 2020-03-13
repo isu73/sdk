@@ -34,7 +34,7 @@ class Sdk
     /**
      * @var string
      */
-    const VERSION = '7.1.0';
+    const VERSION = '7.2.0';
 
     /**
      * @var string
@@ -195,13 +195,13 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('v2/auth/sms'),
+            $this->createEndpoint('v3/auth/sms'),
             [
                 'phone_number' => (string) $phoneNumber
             ]
         );
 
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
+        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
             return $this->hydrator->getAuthenticationFromResponse($response);
         }
 
@@ -228,13 +228,13 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('v2/auth/vms'),
+            $this->createEndpoint('v3/auth/vms'),
             [
                 'phone_number' => (string) $phoneNumber
             ]
         );
 
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
+        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
             return $this->hydrator->getAuthenticationFromResponse($response);
         }
 
@@ -258,13 +258,13 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('v2/auth/email'),
+            $this->createEndpoint('v3/auth/email'),
             [
                 'email' => (string) $email
             ]
         );
 
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
+        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
             return $this->hydrator->getAuthenticationFromResponse($response);
         }
 
@@ -288,13 +288,13 @@ class Sdk
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('v2/auth/totp'),
+            $this->createEndpoint('v3/auth/totp'),
             [
                 'totp_secret' => (string) $secret
             ]
         );
 
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
+        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
             return $this->hydrator->getAuthenticationFromResponse($response);
         }
 
@@ -303,7 +303,7 @@ class Sdk
 
     /**
      * @param string $secret
-     * @param string $mobileSecret
+     * @param string $pushId
      * @param string $sessionId
      * @param string $browserVersion
      *
@@ -314,20 +314,20 @@ class Sdk
      * @throws ValidationException
      * @throws Exception
      */
-    public function requestAuthViaTotpWithMobileSupport($secret, $mobileSecret, $sessionId, $browserVersion)
+    public function requestAuthViaTotpWithMobileSupport($secret, $pushId, $sessionId, $browserVersion)
     {
         $response = $this->call(
             'POST',
-            $this->createEndpoint('v2/auth/totp/mobile'),
+            $this->createEndpoint('v3/auth/totp/mobile'),
             [
                 'totp_secret'     => (string) $secret,
-                'mobile_secret'   => (string) $mobileSecret,
+                'push_id'         => (string) $pushId,
                 'session_id'      => (string) $sessionId,
                 'browser_version' => (string) $browserVersion,
             ]
         );
 
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
+        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
             return $this->hydrator->getAuthenticationFromResponse($response);
         }
 

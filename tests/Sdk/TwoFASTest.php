@@ -26,7 +26,7 @@ class TwoFASTest extends LiveAndMockBase
                 ['phone_number' => $phoneNumber]
             );
 
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
+            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
         }
 
         $authentication = $this->sdk->requestAuthViaSms($phoneNumber);
@@ -46,7 +46,7 @@ class TwoFASTest extends LiveAndMockBase
                 ['phone_number' => $phoneNumber]
             );
 
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
+            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
         }
 
         $authentication = $this->sdk->requestAuthViaCall($phoneNumber);
@@ -61,7 +61,7 @@ class TwoFASTest extends LiveAndMockBase
         if ($this->isDevelopmentEnvironment()) {
             $response = $this->getNewAuthenticationResponse();
 
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
+            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
         }
 
         $authentication = $this->sdk->requestAuthViaEmail('aaa@2fas.com');
@@ -76,7 +76,7 @@ class TwoFASTest extends LiveAndMockBase
         if ($this->isDevelopmentEnvironment()) {
             $response = $this->getNewAuthenticationResponse();
 
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
+            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
         }
 
         $authentication = $this->sdk->requestAuthViaTotp('PEHMPSDNLXIOG65U');
@@ -90,18 +90,18 @@ class TwoFASTest extends LiveAndMockBase
     {
         $this->setUpTwoFAS(getenv('second_oauth_token'), $this->mockedMethods);
 
-        $totpSecret   = 'PEHMPSDNLXIOG65U';
-        $mobileSecret = '9e3d5538259e283b2e6f3ecb29a0d269';
+        $totpSecret = 'PEHMPSDNLXIOG65U';
+        $pushId     = '9e3d5538259e283b2e6f3ecb29a0d269';
 
         if ($this->isDevelopmentEnvironment()) {
             $response = $this->getNewAuthenticationResponse();
 
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
+            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
         }
 
         $authentication = $this->sdk->requestAuthViaTotpWithMobileSupport(
             $totpSecret,
-            $mobileSecret,
+            $pushId,
             uniqid('remaining_characters'),
             'Chrome 56, macOS Sierra'
         );
