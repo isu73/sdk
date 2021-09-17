@@ -34,7 +34,7 @@ class Sdk
     /**
      * @var string
      */
-    const VERSION = '7.2.0';
+    const VERSION = '8.0.0';
 
     /**
      * @var string
@@ -302,39 +302,6 @@ class Sdk
     }
 
     /**
-     * @param string $secret
-     * @param string $pushId
-     * @param string $sessionId
-     * @param string $browserVersion
-     *
-     * @return Authentication
-     *
-     * @throws AuthorizationException
-     * @throws InvalidDateException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function requestAuthViaTotpWithMobileSupport($secret, $pushId, $sessionId, $browserVersion)
-    {
-        $response = $this->call(
-            'POST',
-            $this->createEndpoint('v3/auth/totp/mobile'),
-            [
-                'totp_secret'     => (string) $secret,
-                'push_id'         => (string) $pushId,
-                'session_id'      => (string) $sessionId,
-                'browser_version' => (string) $browserVersion,
-            ]
-        );
-
-        if ($response->matchesHttpCode(HttpCodes::CREATED)) {
-            return $this->hydrator->getAuthenticationFromResponse($response);
-        }
-
-        throw $response->getError();
-    }
-
-    /**
      * Used for validating code entered by user.
      *
      * @param array  $authentications
@@ -416,70 +383,6 @@ class Sdk
 
         if ($response->matchesHttpAndErrorCode(HttpCodes::FORBIDDEN, Errors::INVALID_CODE_ERROR_CAN_RETRY)) {
             return new RejectedCodeCanRetry($authentications);
-        }
-
-        throw $response->getError();
-    }
-
-    /**
-     * @param int    $integrationId
-     * @param string $sessionId
-     * @param string $socketId
-     *
-     * @return array
-     *
-     * @throws AuthorizationException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function authenticateChannel($integrationId, $sessionId, $socketId)
-    {
-        $channelName = 'private-wp_' . $integrationId . '_' . $sessionId;
-
-        $response = $this->call(
-            'POST',
-            $this->createEndpoint('v2/integration/authenticate_channel'),
-            [
-                'channel_name' => (string) $channelName,
-                'socket_id'    => (string) $socketId
-            ]
-        );
-
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
-            return $response->getData();
-        }
-
-        throw $response->getError();
-    }
-
-    /**
-     * @param string $channelName
-     * @param int    $statusId
-     * @param string $status
-     *
-     * @return array
-     *
-     * @throws AuthorizationException
-     * @throws InvalidArgumentException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function updateChannelStatus($channelName, $statusId, $status)
-    {
-        if (!in_array($status, ChannelStatuses::getAllowedStatuses())) {
-            throw new InvalidArgumentException('Channel status is not valid.');
-        }
-
-        $response = $this->call(
-            'POST',
-            $this->createEndpoint('v2/integration/channel/' . $channelName . '/status/' . $statusId),
-            [
-                'status' => (string) $status
-            ]
-        );
-
-        if ($response->matchesHttpCode(HttpCodes::OK)) {
-            return $response->getData();
         }
 
         throw $response->getError();

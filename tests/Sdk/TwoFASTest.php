@@ -86,32 +86,6 @@ class TwoFASTest extends LiveAndMockBase
         $this->assertNotNull($authentication->validTo());
     }
 
-    public function testAuthRequestViaTotpWithMobileSupport()
-    {
-        $this->setUpTwoFAS(getenv('second_oauth_token'), $this->mockedMethods);
-
-        $totpSecret = 'PEHMPSDNLXIOG65U';
-        $pushId     = '9e3d5538259e283b2e6f3ecb29a0d269';
-
-        if ($this->isDevelopmentEnvironment()) {
-            $response = $this->getNewAuthenticationResponse();
-
-            $this->nextApiCallWillReturn($response, HttpCodes::CREATED);
-        }
-
-        $authentication = $this->sdk->requestAuthViaTotpWithMobileSupport(
-            $totpSecret,
-            $pushId,
-            uniqid('remaining_characters'),
-            'Chrome 56, macOS Sierra'
-        );
-
-        $this->assertInstanceOf('\TwoFAS\Api\Authentication', $authentication);
-        $this->assertNotNull($authentication->id());
-        $this->assertNotNull($authentication->createdAt());
-        $this->assertNotNull($authentication->validTo());
-    }
-
     public function testAuthRequestViaSmsWithoutCard()
     {
         $this->setUpTwoFAS(getenv('second_oauth_token'), $this->mockedMethods);
@@ -148,45 +122,6 @@ class TwoFASTest extends LiveAndMockBase
         }
 
         $this->sdk->requestAuthViaTotp('');
-    }
-
-    public function testAuthenticatingChannel()
-    {
-        $integrationId = 1;
-        $sessionId     = '4b3403665fea6';
-        $socketId      = '216020.12250337';
-
-        if ($this->isDevelopmentEnvironment()) {
-            $response = [
-                'auth' => 'e4436932665a96ba8ce6:3b1b3bf7865d1a552811aa82525a9c1ab63bff750aacfc118a6d06b32538ca73'
-            ];
-
-            $this->nextApiCallWillReturn($response, HttpCodes::OK);
-
-            $authArray = $this->sdk->authenticateChannel($integrationId, $sessionId, $socketId);
-            $this->assertArrayHasKey('auth', $authArray);
-            $this->assertTrue(is_string($authArray['auth']));
-        }
-    }
-
-    public function testUpdateChannelStatus()
-    {
-        $channelName = 'private-wp_33_81fcd7e41d3bcd1ec4181d187197241e';
-        $statusId    = 144;
-        $status      = 'resolved';
-
-        if ($this->isDevelopmentEnvironment()) {
-            $channelStatusResponse = [
-                'id'           => $statusId,
-                'channel_name' => $channelName,
-                'status'       => $status,
-                'created_at'   => $this->getDate()->format('Y-m-d H:i:s')
-            ];
-            $this->nextApiCallWillReturn($channelStatusResponse, HttpCodes::OK);
-
-            $response = $this->sdk->updateChannelStatus($channelName, $statusId, $status);
-            $this->assertEquals($channelStatusResponse, $response);
-        }
     }
 
     /**

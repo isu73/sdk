@@ -23,9 +23,7 @@ class Hydrator
         $user
             ->setId($data['id'])
             ->setExternalId($data['external_id'])
-            ->setPushId($data['push_id'])
             ->setBackupCodesCount($data['backup_codes_count'])
-            ->setHasMobileUser($data['has_mobile_user'])
             ->setPhoneNumber($cryptographer->decrypt($data['phone_number']))
             ->setEmail($cryptographer->decrypt($data['email']))
             ->setTotpSecret($cryptographer->decrypt($data['totp_secret']));

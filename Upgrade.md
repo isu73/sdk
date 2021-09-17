@@ -1,5 +1,20 @@
 # Upgrade
 
+### 7.2.0 > 8.0.0
+
+#### requestAuthViaTotpWithMobileSupport
+Method has been removed
+
+#### authenticateChannel
+Method has been removed
+
+#### updateChannelStatus
+Method has been removed
+
+#### IntegrationUser
+Field 'push_id' has been removed.
+Field 'has_mobile_user' has been removed.
+
 ### 6.0.0 > 7.0.0
 Main class renamed to `Sdk`.
 Php version requirement increased to `>=5.4`.

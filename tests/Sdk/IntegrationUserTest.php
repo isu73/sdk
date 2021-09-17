@@ -160,28 +160,6 @@ class IntegrationUserTest extends LiveAndMockBase
         return $user;
     }
 
-    public function testAddIntegrationUserWithInvalidData()
-    {
-        if ($this->isDevelopmentEnvironment()) {
-            $data = ['error' => [
-                'code' => 9030,
-                'msg'  => [
-                    'push_id' => [
-                        'validation.size.string'
-                    ]
-                ]
-            ]];
-            $this->nextApiCallWillReturn($data, HttpCodes::BAD_REQUEST);
-        }
-
-        $this->setExpectedException('\TwoFAS\Api\Exception\ValidationException');
-
-        $user = new IntegrationUser();
-        $user->setMobileSecret('invalid');
-
-        $this->sdk->addIntegrationUser($this->keyStorage, $user);
-    }
-
     public function testAddIntegrationUserWithNonProvidedPhoneNumber()
     {
         $user = new IntegrationUser();
@@ -244,8 +222,7 @@ class IntegrationUserTest extends LiveAndMockBase
             ->setPhoneNumber('+48500200300')
             ->setEmail('aaa@2fas.com')
             ->setTotpSecret('PEHMPSDNLXIOG666')
-            ->setBackupCodesCount(0)
-            ->setHasMobileUser(false);
+            ->setBackupCodesCount(0);
 
         $response = [
             'id'                 => $user->getId(),
@@ -268,37 +245,8 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->assertEquals($response['phone_number'], $updatedUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals($response['totp_secret'], $updatedUser->getTotpSecret());
         $this->assertEquals($response['backup_codes_count'], $updatedUser->getBackupCodesCount());
-        $this->assertFalse($updatedUser->hasMobileUser());
 
         return $updatedUser;
-    }
-
-    /**
-     * @param IntegrationUser $user
-     *
-     * @depends testAddIntegrationUser
-     *
-     * @throws ApiException
-     */
-    public function testUpdateIntegrationUserWithInvalidData(IntegrationUser $user)
-    {
-        if ($this->isDevelopmentEnvironment()) {
-            $data = ['error' => [
-                'code' => 9030,
-                'msg'  => [
-                    'push_id' => [
-                        'validation.size.string'
-                    ]
-                ]
-            ]];
-            $this->sdk->method('formatNumber')->willReturn(new FormattedNumber(null));
-            $this->nextApiCallWillReturn($data, HttpCodes::BAD_REQUEST);
-        }
-
-        $this->setExpectedException('\TwoFAS\Api\Exception\ValidationException');
-
-        $user->setMobileSecret('invalid_method');
-        $this->sdk->updateIntegrationUser($this->keyStorage, $user);
     }
 
     public function testGetIntegrationUsers()
@@ -347,9 +295,6 @@ class IntegrationUserTest extends LiveAndMockBase
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
-            'push_id'            => uniqid('', true),
-            'has_mobile_user'    => false,
-            'mobile_user_id'     => null,
             'backup_codes_count' => 0
         ];
 
@@ -368,7 +313,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->assertEquals('+48500200300', $responseUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals('aaa@2fas.com', $responseUser->getEmail());
         $this->assertEquals('PEHMPSDNLXIOG666', $responseUser->getTotpSecret());
-        $this->assertFalse($responseUser->hasMobileUser());
         $this->assertEquals(0, $responseUser->getBackupCodesCount());
     }
 
@@ -385,9 +329,6 @@ class IntegrationUserTest extends LiveAndMockBase
             'phone_number'       => 'ZWZ6dExNUktRZExjMXVHcXVKcjdBdz09:RjQ5ToYrddzUWTqREMMJMA==',
             'email'              => 'dzdrMkxOMk9pa2JjUlR5d1YyUnVuUT09:lxbNXqw7/60nlSewHKmB4w==',
             'totp_secret'        => 'UWdWdU9ZSTJIWjBkSVJTYkRWN1hYN0RqVi9qd21mMjF3UlZFNGF4d092UT0=:P95fmMxZVcWVwpAsK3q3uA==',
-            'push_id'            => uniqid('', true),
-            'has_mobile_user'    => false,
-            'mobile_user_id'     => null,
             'backup_codes_count' => 0
         ];
 
@@ -407,7 +348,6 @@ class IntegrationUserTest extends LiveAndMockBase
         $this->assertEquals('+48500200300', $responseUser->getPhoneNumber()->phoneNumber());
         $this->assertEquals('aaa@2fas.com', $responseUser->getEmail());
         $this->assertEquals('PEHMPSDNLXIOG666', $responseUser->getTotpSecret());
-        $this->assertFalse($responseUser->hasMobileUser());
     }
 
     /**

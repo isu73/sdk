@@ -38,19 +38,9 @@ final class IntegrationUser
     private $totpSecret;
 
     /**
-     * @var null|string
-     */
-    private $pushId;
-
-    /**
      * @var int
      */
     private $backupCodesCount;
-
-    /**
-     * @var bool
-     */
-    private $hasMobileUser;
 
     /**
      * @return string
@@ -170,51 +160,6 @@ final class IntegrationUser
     }
 
     /**
-     * @return null|string
-     */
-    public function getPushId()
-    {
-        return $this->pushId;
-    }
-
-    /**
-     * @param null|string $pushId
-     *
-     * @return IntegrationUser
-     */
-    public function setPushId($pushId)
-    {
-        if (null === $pushId || '' === $pushId) {
-            $this->pushId = null;
-            return $this;
-        }
-        $this->pushId = (string) $pushId;
-        return $this;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return null|string
-     */
-    public function getMobileSecret()
-    {
-        return $this->getPushId();
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param null|string $mobileSecret
-     *
-     * @return IntegrationUser
-     */
-    public function setMobileSecret($mobileSecret)
-    {
-        return $this->setPushId($mobileSecret);
-    }
-
-    /**
      * @return int
      */
     public function getBackupCodesCount()
@@ -238,29 +183,6 @@ final class IntegrationUser
     }
 
     /**
-     * @return bool
-     */
-    public function hasMobileUser()
-    {
-        return $this->hasMobileUser;
-    }
-
-    /**
-     * @param bool $hasMobileUser
-     *
-     * @return $this
-     */
-    public function setHasMobileUser($hasMobileUser)
-    {
-        if (!is_bool($hasMobileUser)) {
-            throw new InvalidArgumentException('Has Mobile User should be a boolean');
-        }
-
-        $this->hasMobileUser = $hasMobileUser;
-        return $this;
-    }
-
-    /**
      * @param Cryptographer $cryptographer
      *
      * @return array
@@ -270,7 +192,6 @@ final class IntegrationUser
         return [
             'id'           => $this->id,
             'external_id'  => $this->externalId,
-            'push_id'      => $this->pushId,
             'phone_number' => $cryptographer->encrypt($this->getPhoneNumber()->phoneNumber()),
             'email'        => $cryptographer->encrypt($this->getEmail()),
             'totp_secret'  => $cryptographer->encrypt($this->getTotpSecret())

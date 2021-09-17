@@ -83,51 +83,6 @@ class ValidationExceptionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals([ValidationRules::UNIQUE_PHONE_NUMBER], $exception->getError('code'));
     }
 
-    public function testPusherSocketIdValidationRule()
-    {
-        $errors = ['error' => [
-            'code' => 9030,
-            'msg'  => [
-                'code' => [
-                    'validation.pusher_socket_id'
-                ]
-            ]
-        ]];
-
-        $exception = $this->getException($errors);
-        $this->assertEquals([ValidationRules::PUSHER_SOCKET_ID], $exception->getError('code'));
-    }
-
-    public function testPusherChannelNameValidationRule()
-    {
-        $errors = ['error' => [
-            'code' => 9030,
-            'msg'  => [
-                'code' => [
-                    'validation.pusher_channel_name'
-                ]
-            ]
-        ]];
-
-        $exception = $this->getException($errors);
-        $this->assertEquals([ValidationRules::PUSHER_CHANNEL_NAME], $exception->getError('code'));
-    }
-
-    public function testIntegrationChannelNameValidationRule()
-    {
-        $errors = ['error' => [
-            'code' => 9030,
-            'msg'  => [
-                'code' => [
-                    'validation.private_integration_channel'
-                ]
-            ]
-        ]];
-
-        $exception = $this->getException($errors);
-        $this->assertEquals([ValidationRules::INTEGRATION_CHANNEL_NAME], $exception->getError('code'));
-    }
-
     public function testRegexDot()
     {
         $errors = ['error' => [
